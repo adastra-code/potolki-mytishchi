@@ -3,7 +3,7 @@ import { allPages, services, rooms, cities, trustPages, reviewsData } from "./se
 
 const root = process.cwd();
 const SITE = "https://adastra-code.github.io/potolki-mytishchi";
-const V = "20261122e";
+const V = "20261122h";
 
 const nav = `
       <nav class="nav" id="nav" aria-label="Основная навигация">
@@ -63,6 +63,7 @@ const footer = `
       <nav class="footer__nav" aria-label="Навигация в подвале">
         <a href="uslugi.html">Услуги</a>
         <a href="prices.html">Цены</a>
+        <a href="materialy.html">Материалы</a>
         <a href="index.html#calculator">Калькулятор</a>
         <a href="quiz.html">Квиз</a>
         <a href="gallery.html">Работы</a>
@@ -260,14 +261,17 @@ const renderPage = (page) => {
   <meta property="og:title" content="${esc(page.title)}" />
   <meta property="og:description" content="${esc(page.description)}" />
   <meta property="og:url" content="${SITE}/${page.slug}.html" />
-  <meta property="og:image" content="${SITE}/${page.cardImage}" />
+  <meta property="og:image" content="${SITE}/assets/og/${page.slug}.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:site_name" content="Потолки Мытищи" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="${SITE}/assets/og/${page.slug}.jpg" />
   <meta name="theme-color" content="#0f1115" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1115'/%3E%3Cpath d='M14 40h36M20 31h24M26 22h12' stroke='%23c8a165' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" href="assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css?v=${V}" />
   <link rel="stylesheet" href="css/style.css?v=${V}" />
   <link rel="stylesheet" href="css/seo.css?v=${V}" />
   <script type="application/ld+json">
@@ -520,14 +524,17 @@ const renderCity = (page) => {
   <meta property="og:title" content="${esc(page.title)}" />
   <meta property="og:description" content="${esc(page.description)}" />
   <meta property="og:url" content="${SITE}/${page.slug}.html" />
-  <meta property="og:image" content="${SITE}/${page.photos[0].src}" />
+  <meta property="og:image" content="${SITE}/assets/og/${page.slug}.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:site_name" content="Потолки Мытищи" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="${SITE}/assets/og/${page.slug}.jpg" />
   <meta name="theme-color" content="#0f1115" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1115'/%3E%3Cpath d='M14 40h36M20 31h24M26 22h12' stroke='%23c8a165' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" href="assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css?v=${V}" />
   <link rel="stylesheet" href="css/style.css?v=${V}" />
   <link rel="stylesheet" href="css/seo.css?v=${V}" />
   <script type="application/ld+json">
@@ -714,7 +721,7 @@ const renderTrust = (page) => {
         cities.find((x) => x.slug === slug) ||
         trustPages.find((x) => x.slug === slug);
       if (!item) return "";
-      const image = item.cardImage || item.photos?.[0]?.src || "assets/img/work-living.jpg";
+      const image = item.cardImage || item.photos?.[0]?.src || "assets/img/work-living.webp";
       const title = item.cardTitle || item.h1;
       const text = item.cardText || item.lead || "";
       return `
@@ -742,14 +749,17 @@ const renderTrust = (page) => {
   <meta property="og:title" content="${esc(page.title)}" />
   <meta property="og:description" content="${esc(page.description)}" />
   <meta property="og:url" content="${SITE}/${page.slug}.html" />
-  <meta property="og:image" content="${SITE}/assets/img/work-living.jpg" />
+  <meta property="og:image" content="${SITE}/assets/og/${page.slug}.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:site_name" content="Потолки Мытищи" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="${SITE}/assets/og/${page.slug}.jpg" />
   <meta name="theme-color" content="#0f1115" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1115'/%3E%3Cpath d='M14 40h36M20 31h24M26 22h12' stroke='%23c8a165' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" href="assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css?v=${V}" />
   <link rel="stylesheet" href="css/style.css?v=${V}" />
   <link rel="stylesheet" href="css/seo.css?v=${V}" />
   <script type="application/ld+json">
@@ -900,14 +910,17 @@ const renderReviews = () => {
   <meta property="og:title" content="Отзывы клиентов — натяжные потолки в Мытищах" />
   <meta property="og:description" content="Рейтинг 4,9 из 5, 25 отзывов клиентов. Реальные истории о монтаже натяжных потолков." />
   <meta property="og:url" content="${SITE}/otzyvy.html" />
-  <meta property="og:image" content="${SITE}/assets/img/work-living.jpg" />
+  <meta property="og:image" content="${SITE}/assets/og/otzyvy.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:site_name" content="Потолки Мытищи" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="${SITE}/assets/og/otzyvy.jpg" />
   <meta name="theme-color" content="#0f1115" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1115'/%3E%3Cpath d='M14 40h36M20 31h24M26 22h12' stroke='%23c8a165' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" href="assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css?v=${V}" />
   <link rel="stylesheet" href="css/style.css?v=${V}" />
   <link rel="stylesheet" href="css/seo.css?v=${V}" />
   <script type="application/ld+json">
@@ -1024,14 +1037,17 @@ const renderHub = () => {  const serviceCards = services
   <meta property="og:title" content="Услуги и цены — натяжные потолки в Мытищах" />
   <meta property="og:description" content="Виды натяжных потолков и решения по комнатам: цены, фото и монтаж в Мытищах и Московской области." />
   <meta property="og:url" content="${SITE}/uslugi.html" />
-  <meta property="og:image" content="${SITE}/assets/img/work-living.jpg" />
+  <meta property="og:image" content="${SITE}/assets/og/uslugi.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:site_name" content="Потолки Мытищи" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="${SITE}/assets/og/uslugi.jpg" />
   <meta name="theme-color" content="#0f1115" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1115'/%3E%3Cpath d='M14 40h36M20 31h24M26 22h12' stroke='%23c8a165' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" href="assets/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/fonts.css?v=${V}" />
   <link rel="stylesheet" href="css/style.css?v=${V}" />
   <link rel="stylesheet" href="css/seo.css?v=${V}" />
   <script type="application/ld+json">
@@ -1076,6 +1092,25 @@ ${schema}
           <p>Технологии, которые чаще всего выбирают для современных интерьеров.</p>
         </div>
         <div class="seo-hub-grid">${serviceCards}</div>
+      </div>
+    </section>
+
+    <section class="seo-hub" id="materials">
+      <div class="container">
+        <div class="seo-hub__head">
+          <h2>Материалы и фактуры</h2>
+          <p>Матовые, глянцевые, сатиновые и тканевые полотна, фотопечать: сравнение, применение и уход.</p>
+        </div>
+        <div class="seo-hub-grid">
+          <a class="seo-card" href="materialy.html">
+            <img src="assets/img/work-living.webp" alt="Матовое полотно натяжного потолка в гостиной" loading="lazy" />
+            <div class="seo-card__body">
+              <h3>Материалы и фактуры</h3>
+              <p>Чем отличаются матовое, глянцевое и сатиновое полотно, где уместны тканевые потолки и фотопечать.</p>
+              <span>Сравнить фактуры →</span>
+            </div>
+          </a>
+        </div>
       </div>
     </section>
 
