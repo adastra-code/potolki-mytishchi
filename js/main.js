@@ -119,20 +119,6 @@
     shadow: "Теневой",
     multi: "Многоуровневый",
   };
-  const TYPE_RATES = {
-    matte: 890,
-    gloss: 990,
-    satin: 950,
-    light: 1450,
-    shadow: 1590,
-    multi: 1900,
-  };
-  const PRICE_LIGHT = 450;
-  const PRICE_CHANDELIER = 650;
-  const PRICE_PIPE = 600;
-  const PRICE_CORNER = 300;
-  const PRICE_DEMOLITION = 180;
-  const MIN_ORDER = 9900;
   const MAX_ROOMS = 6;
 
   let calcState = null;
@@ -145,7 +131,6 @@
   if (calcRooms && addRoomBtn && totalOut && breakdown) {
     let roomSeq = 0;
 
-    const money = (n) => `${new Intl.NumberFormat("ru-RU").format(n)} ₽`;
     const clamp = (value, min, max) => Math.min(max, Math.max(min, Number(value) || 0));
     const typeOptions = Object.entries(TYPE_LABELS)
       .map(([value, label]) => `<option value="${value}">${label}</option>`)
@@ -182,46 +167,22 @@
 
     const calcTotal = () => {
       const rooms = readRooms();
-      let raw = 0;
-
-      rooms.forEach((room) => {
-        room.cost =
-          room.area * TYPE_RATES[room.type] +
-          room.lights * PRICE_LIGHT +
-          room.chandeliers * PRICE_CHANDELIER +
-          room.pipes * PRICE_PIPE +
-          room.corners * PRICE_CORNER +
-          (room.demolition ? room.area * PRICE_DEMOLITION : 0);
-        raw += room.cost;
-      });
-
-      const discount = rooms.length >= 2 ? Math.round(raw * 0.1) : 0;
-      const afterDiscount = raw - discount;
-      const total = Math.max(MIN_ORDER, Math.round(afterDiscount / 10) * 10);
-      const minExtra = afterDiscount < MIN_ORDER ? Math.max(0, total - afterDiscount) : 0;
+      const totalArea = rooms.reduce((sum, room) => sum + room.area, 0);
 
       Array.from(calcRooms.querySelectorAll(".calc-room")).forEach((roomEl, index) => {
         const subtotal = roomEl.querySelector(".room-subtotal");
-        if (subtotal) subtotal.textContent = money(rooms[index].cost);
+        if (subtotal) subtotal.textContent = `${rooms[index].area} м²`;
       });
 
-      const rows = rooms.map((room, index) => ({
-        label: `Комната ${index + 1} · ${TYPE_LABELS[room.type].toLowerCase()} · ${room.area} м²`,
-        value: room.cost,
-      }));
-
-      if (discount > 0) rows.push({ label: "Скидка 10% за 2+ комнаты", value: -discount });
-      if (minExtra > 0) rows.push({ label: "До минимального заказа", value: minExtra });
-
-      breakdown.innerHTML = rows
-        .map((row) => {
-          const cls = row.value < 0 ? ' class="calc__discount"' : "";
-          return `<div${cls}><span>${row.label}</span><strong>${money(row.value)}</strong></div>`;
-        })
+      breakdown.innerHTML = rooms
+        .map(
+          (room, index) =>
+            `<div><span>Комната ${index + 1} · ${TYPE_LABELS[room.type].toLowerCase()}</span><strong>${room.area} м²</strong></div>`
+        )
         .join("");
 
-      totalOut.textContent = money(total);
-      calcState = { rooms, total, discount };
+      totalOut.textContent = `${rooms.length} комн. · ${totalArea} м²`;
+      calcState = { rooms, totalArea };
     };
 
     const createRoom = (defaults = {}) => {
@@ -268,8 +229,8 @@
           <span>Демонтаж старого потолка</span>
         </label>
         <div class="calc-room__subtotal">
-          <span>По комнате</span>
-          <strong class="room-subtotal">0 ₽</strong>
+          <span>Площадь</span>
+          <strong class="room-subtotal">0 м²</strong>
         </div>`;
 
       calcRooms.appendChild(room);
@@ -425,7 +386,6 @@
     calcSend.addEventListener("click", () => {
       if (!calcState) return;
 
-      const fmt = (n) => `${new Intl.NumberFormat("ru-RU").format(n)} ₽`;
       const roomLines = calcState.rooms.map((room, index) => {
         const details = [
           `${room.area} м²`,
@@ -436,15 +396,14 @@
           `углы ${room.corners}`,
           `демонтаж ${room.demolition ? "да" : "нет"}`,
         ].join(", ");
-        return `Комната ${index + 1}: ${details} — ${fmt(room.cost)}`;
+        return `Комната ${index + 1}: ${details}`;
       });
 
       const summary = [
-        "Расчёт с сайта:",
+        "Параметры с сайта:",
         ...roomLines,
-        calcState.discount > 0 ? `Скидка 10% за 2+ комнаты: −${fmt(calcState.discount)}` : "",
-        `Итого: ${fmt(calcState.total)}`,
-        "Точная смета — после замера.",
+        `Всего: ${calcState.rooms.length} комн., ${calcState.totalArea} м²`,
+        "Стоимость рассчитаем после замера.",
       ]
         .filter(Boolean)
         .join("\n");
@@ -460,7 +419,7 @@
         setTimeout(() => {
           $('input[name="name"]', contactForm)?.focus({ preventScroll: true });
         }, 500);
-        showToast("Расчёт перенесён в форму заявки");
+        showToast("Параметры перенесены в форму заявки");
         reachGoal("calculator_send");
         return;
       }
@@ -697,8 +656,8 @@
           });
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-          showSuccess("Заявка отправлена! Свяжемся с вами в течение 15 минут.");
-          showToast("Заявка отправлена. Перезвоним в течение 15 минут!");
+          showSuccess("Заявка отправлена! Свяжемся с вами.");
+          showToast("Заявка отправлена. Перезвоним.");
           const goal = form.dataset.form === "booking"
             ? "booking_submit"
             : form.dataset.form === "quiz"
@@ -735,7 +694,7 @@
     if (!leadsEndpoint) {
       if (channel) channel.hidden = false;
       if (button) {
-        button.textContent = isHero ? "Получить расчёт в WhatsApp" : "Записаться через WhatsApp";
+        button.textContent = isHero ? "Отправить заявку в WhatsApp" : "Отправить в WhatsApp";
       }
     }
   });

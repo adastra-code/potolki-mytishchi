@@ -3,7 +3,7 @@ import { allPages, services, rooms, cities, trustPages, reviewsData } from "./se
 
 const root = process.cwd();
 const SITE = "https://adastra-code.github.io/potolki-mytishchi";
-const V = "20261122h";
+const V = "20261122l";
 
 const nav = `
       <nav class="nav" id="nav" aria-label="Основная навигация">
@@ -15,7 +15,7 @@ const nav = `
         <a href="index.html#reviews">Отзывы</a>
         <a href="index.html#contacts">Контакты</a>
         <div class="nav__mobile-cta">
-          <a class="btn btn--solid btn--block" href="zapis.html">Замер бесплатно</a>
+          <a class="btn btn--solid btn--block" href="zapis.html">Вызвать замерщика</a>
           <a class="nav__phone" href="tel:+79919690999">+7 (991) 969-09-99</a>
         </div>
       </nav>`;
@@ -37,7 +37,7 @@ const header = `
           <span>Круглосуточно, без выходных</span>
           <strong>+7 (991) 969-09-99</strong>
         </a>
-        <a class="btn btn--solid" href="zapis.html">Замер бесплатно</a>
+        <a class="btn btn--solid" href="zapis.html">Вызвать замерщика</a>
         <button class="burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
           <span></span><span></span><span></span>
         </button>
@@ -69,7 +69,7 @@ const footer = `
         <a href="gallery.html">Работы</a>
         <a href="cases.html">Кейсы</a>
         <a href="o-kompanii.html">О компании</a>
-        <a href="garantii.html">Гарантии</a>
+        <a href="garantii.html">Гарантия</a>
         <a href="otzyvy.html">Отзывы</a>
         <a href="zapis.html">Запись на замер</a>
         <a href="index.html#contacts">Контакты</a>
@@ -156,12 +156,6 @@ const pageSchema = (page) => {
             addressCountry: "RU",
           },
         },
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "RUB",
-          price: page.priceFrom,
-          availability: "https://schema.org/InStock",
-        },
       },
       {
         "@context": "https://schema.org",
@@ -217,13 +211,6 @@ const renderPage = (page) => {
               <h3>${esc(item.title)}</h3>
               <p>${esc(item.text)}</p>
             </div>`
-    )
-    .join("");
-
-  const priceRows = page.prices
-    .map(
-      (item) => `
-              <tr><td>${esc(item.name)}</td><td>${esc(item.price)}</td></tr>`
     )
     .join("");
 
@@ -290,12 +277,12 @@ ${pageSchema(page)}
         <h1>${esc(page.h1)}</h1>
         <p class="seo-hero__lead">${esc(page.lead)}</p>
         <div class="seo-meta">
-          <span>${esc(page.priceLabel)}</span>
-          <span>Монтаж за 1 день</span>
+          <span>Расчёт после замера</span>
+          <span>Монтаж под ключ</span>
           <span>Мытищи и Московская область</span>
         </div>
         <div class="seo-hero__cta">
-          <a class="btn btn--solid btn--lg" href="index.html#calculator">Рассчитать стоимость</a>
+          <a class="btn btn--solid btn--lg" href="index.html#calculator">Собрать параметры</a>
           <a class="btn btn--ghost btn--lg" href="index.html#contacts">Записаться на замер</a>
         </div>
       </div>
@@ -307,15 +294,6 @@ ${pageSchema(page)}
 
         <h2>${isRoom ? "Что учесть в этой комнате" : "Почему выбирают этот потолок"}</h2>
         <div class="seo-benefits">${benefits}</div>
-
-        <h2>Цены</h2>
-        <div class="seo-table-wrap">
-          <table class="seo-table">
-            <thead><tr><th>Вариант</th><th>Цена</th></tr></thead>
-            <tbody>${priceRows}</tbody>
-          </table>
-        </div>
-        <p class="seo-note">Цены ориентировочные и зависят от площади, геометрии, профиля, света и состояния основания. Точную смету фиксируем после бесплатного замера.</p>
 
         <h2>Как проходит монтаж</h2>
         <ol class="seo-steps">${steps}</ol>
@@ -330,7 +308,7 @@ ${pageSchema(page)}
           <h2>Нужен такой потолок?</h2>
           <p>Приедем на замер, привезём образцы и назовём точную цену. Работаем по Мытищам и Московской области.</p>
           <div>
-            <a class="btn btn--solid" href="index.html#calculator">Рассчитать</a>
+            <a class="btn btn--solid" href="index.html#calculator">Собрать параметры</a>
             <a class="btn btn--ghost" href="tel:+79919690999">+7 (991) 969-09-99</a>
           </div>
         </div>
@@ -338,7 +316,7 @@ ${pageSchema(page)}
 
       <aside class="seo-aside">
         <div class="seo-cta">
-          <p class="eyebrow">Бесплатный замер</p>
+          <p class="eyebrow">Замер</p>
           <h2>Рассчитать потолок</h2>
           <p>Привезём образцы, замерим комнату и зафиксируем смету в договоре.</p>
           <a class="btn btn--solid" href="index.html#calculator">Открыть калькулятор</a>
@@ -378,14 +356,6 @@ ${footer}${mobileBar}
 };
 
 const renderCity = (page) => {
-  const cityPrices = [
-    { name: "Матовый потолок", price: "от 890 ₽/м²" },
-    { name: "Глянцевый потолок", price: "от 990 ₽/м²" },
-    { name: "Сатиновый потолок", price: "от 950 ₽/м²" },
-    { name: "Теневой потолок", price: "от 1 590 ₽/м²" },
-    { name: "Световые линии", price: "от 1 450 ₽/м²" },
-  ];
-
   const crumbs = [
     { "@type": "ListItem", position: 1, name: "Главная", item: `${SITE}/` },
     { "@type": "ListItem", position: 2, name: "Услуги", item: `${SITE}/uslugi.html` },
@@ -413,12 +383,6 @@ const renderCity = (page) => {
             addressRegion: "Московская область",
             addressCountry: "RU",
           },
-        },
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "RUB",
-          price: page.priceFrom,
-          availability: "https://schema.org/InStock",
         },
       },
       {
@@ -448,10 +412,6 @@ const renderCity = (page) => {
               <p>${esc(item.text)}</p>
             </div>`
     )
-    .join("");
-
-  const priceRows = cityPrices
-    .map((item) => `<tr><td>${esc(item.name)}</td><td>${esc(item.price)}</td></tr>`)
     .join("");
 
   const steps = [
@@ -488,7 +448,7 @@ const renderCity = (page) => {
             <img src="${item.photos[0].src}" alt="Натяжные потолки в ${esc(item.short)}" loading="lazy" />
             <div class="seo-card__body">
               <h3>Потолки в ${esc(item.short)}</h3>
-              <p>Выезд из Мытищ ${esc(item.distance)} · ${esc(item.time)}.</p>
+              <p>Выезд из Мытищ в ${esc(item.short)}.</p>
               <span>Подробнее →</span>
             </div>
           </a>`
@@ -505,7 +465,7 @@ const renderCity = (page) => {
             <div class="seo-card__body">
               <h3>${esc(item.cardTitle)}</h3>
               <p>${esc(item.cardText)}</p>
-              <span>Подробнее · ${esc(item.priceLabel)} →</span>
+              <span>Подробнее →</span>
             </div>
           </a>`
     )
@@ -560,13 +520,12 @@ ${schema}
         <h1>${esc(page.h1)}</h1>
         <p class="seo-hero__lead">${esc(page.lead)}</p>
         <div class="seo-meta">
-          <span>${esc(page.distance)} от Мытищ</span>
-          <span>${esc(page.time)} в пути</span>
-          <span>${esc(page.priceLabel)}</span>
-          <span>Замер бесплатно</span>
+          <span>Выезд из Мытищ</span>
+          <span>Замер по записи</span>
+          <span>Расчёт после замера</span>
         </div>
         <div class="seo-hero__cta">
-          <a class="btn btn--solid btn--lg" href="index.html#calculator">Рассчитать стоимость</a>
+          <a class="btn btn--solid btn--lg" href="index.html#calculator">Собрать параметры</a>
           <a class="btn btn--ghost btn--lg" href="index.html#contacts">Записаться на замер</a>
         </div>
       </div>
@@ -580,19 +539,10 @@ ${schema}
         <div class="seo-districts">
           ${page.districts.map((district) => `<span>${esc(district)}</span>`).join("")}
         </div>
-        <p>Дорога из Мытищ занимает ${esc(page.time)} — около ${esc(page.distance)} по дороге. Время зависит от пробок; точный выезд согласуем при заявке.</p>
+        <p>Выезд из Мытищ согласуем при заявке. Район и удобное время подтверждаем заранее.</p>
 
         <h2>Что учесть в ${esc(page.short)}</h2>
         <div class="seo-benefits">${features}</div>
-
-        <h2>Цены</h2>
-        <div class="seo-table-wrap">
-          <table class="seo-table">
-            <thead><tr><th>Вариант</th><th>Цена</th></tr></thead>
-            <tbody>${priceRows}</tbody>
-          </table>
-        </div>
-        <p class="seo-note">Цены ориентировочные и зависят от площади, геометрии, профиля, света и состояния основания. Точную смету фиксируем после бесплатного замера.</p>
 
         <h2>Как проходит замер и монтаж</h2>
         <ol class="seo-steps">${steps}</ol>
@@ -605,9 +555,9 @@ ${schema}
 
         <div class="seo-article-cta">
           <h2>Нужен потолок в ${esc(page.short)}?</h2>
-          <p>Приедем на замер, привезём образцы и назовём точную цену. Выезд из Мытищ — ${esc(page.distance)}.</p>
+          <p>Приедем на замер, привезём образцы и согласуем смету. Выезд из Мытищ.</p>
           <div>
-            <a class="btn btn--solid" href="index.html#calculator">Рассчитать</a>
+            <a class="btn btn--solid" href="index.html#calculator">Собрать параметры</a>
             <a class="btn btn--ghost" href="tel:+79919690999">+7 (991) 969-09-99</a>
           </div>
         </div>
@@ -615,7 +565,7 @@ ${schema}
 
       <aside class="seo-aside">
         <div class="seo-cta">
-          <p class="eyebrow">Бесплатный замер</p>
+          <p class="eyebrow">Замер</p>
           <h2>Рассчитать в ${esc(page.short)}</h2>
           <p>Привезём образцы, замерим комнату и зафиксируем смету в договоре.</p>
           <a class="btn btn--solid" href="index.html#calculator">Открыть калькулятор</a>
@@ -810,7 +760,7 @@ ${schema}
 
       <aside class="seo-aside">
         <div class="seo-cta">
-          <p class="eyebrow">Бесплатный замер</p>
+          <p class="eyebrow">Замер</p>
           <h2>Рассчитать потолок</h2>
           <p>Привезём образцы, замерим комнату и зафиксируем смету в договоре.</p>
           <a class="btn btn--solid" href="index.html#calculator">Открыть калькулятор</a>
@@ -819,7 +769,7 @@ ${schema}
         <div class="seo-links">
           <h3>Полезно</h3>
           <a href="o-kompanii.html">О компании</a>
-          <a href="garantii.html">Гарантии</a>
+          <a href="garantii.html">Гарантия</a>
           <a href="otzyvy.html">Отзывы</a>
           <a href="uslugi.html">Услуги и цены</a>
         </div>
@@ -989,7 +939,7 @@ const renderHub = () => {  const serviceCards = services
             <div class="seo-card__body">
               <h3>${esc(item.cardTitle)}</h3>
               <p>${esc(item.cardText)}</p>
-              <span>Подробнее · ${esc(item.priceLabel)} →</span>
+              <span>Подробнее →</span>
             </div>
           </a>`
     )
@@ -1002,7 +952,7 @@ const renderHub = () => {  const serviceCards = services
             <div class="seo-card__body">
               <h3>${esc(item.cardTitle)}</h3>
               <p>${esc(item.cardText)}</p>
-              <span>Подробнее · ${esc(item.priceLabel)} →</span>
+              <span>Подробнее →</span>
             </div>
           </a>`
     )
@@ -1029,13 +979,13 @@ const renderHub = () => {  const serviceCards = services
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Услуги и цены — натяжные потолки в Мытищах | Потолки Мытищи</title>
-  <meta name="description" content="Виды натяжных потолков и решения по комнатам: теневые, световые линии, парящие, многоуровневые. Цены, фото и монтаж в Мытищах и Московской области." />
+  <title>Услуги — натяжные потолки в Мытищах | Потолки Мытищи</title>
+  <meta name="description" content="Виды натяжных потолков и решения по комнатам: теневые, световые линии, парящие, многоуровневые. Описание, фото и монтаж в Мытищах и Московской области." />
   <link rel="canonical" href="${SITE}/uslugi.html" />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="ru_RU" />
-  <meta property="og:title" content="Услуги и цены — натяжные потолки в Мытищах" />
-  <meta property="og:description" content="Виды натяжных потолков и решения по комнатам: цены, фото и монтаж в Мытищах и Московской области." />
+  <meta property="og:title" content="Услуги — натяжные потолки в Мытищах" />
+  <meta property="og:description" content="Виды натяжных потолков и решения по комнатам: описание, фото и монтаж в Мытищах и Московской области." />
   <meta property="og:url" content="${SITE}/uslugi.html" />
   <meta property="og:image" content="${SITE}/assets/og/uslugi.jpg" />
   <meta property="og:image:width" content="1200" />
@@ -1067,20 +1017,20 @@ ${schema}
     <section class="seo-hero">
       <div class="container">
         <p class="eyebrow">Услуги</p>
-        <h1>Услуги и цены</h1>
+        <h1>Услуги и решения</h1>
         <p class="seo-hero__lead">
           Натяжные потолки под ключ в Мытищах и Московской области: теневые профили,
           световые линии, парящие и многоуровневые конструкции. Выберите решение по типу
-          или по комнате — на каждой странице есть цены, фото и ответы на вопросы.
+          или по комнате — на каждой странице есть описание, фото и ответы на вопросы.
         </p>
         <div class="seo-meta">
-          <span>Монтаж за 1 день</span>
-          <span>Замер бесплатно</span>
-          <span>Гарантия по договору</span>
+          <span>Монтаж под ключ</span>
+          <span>Замер по записи</span>
+          <span>Договор и смета</span>
         </div>
         <div class="seo-hero__cta">
-          <a class="btn btn--solid btn--lg" href="prices.html">Смотреть цены</a>
-          <a class="btn btn--ghost btn--lg" href="index.html#calculator">Открыть калькулятор</a>
+          <a class="btn btn--solid btn--lg" href="prices.html">Профили и условия</a>
+          <a class="btn btn--ghost btn--lg" href="index.html#calculator">Собрать параметры</a>
         </div>
       </div>
     </section>
@@ -1132,7 +1082,7 @@ ${schema}
             Выезжаем на замер в Мытищи, Королёв, Пушкино, Щёлково, Ивантеевку
             и ближайшие районы Московской области. Для дальних адресов стоимость
             и время выезда уточняйте при заявке — для большинства ближайших адресов
-            замер бесплатный.
+            замер.
           </p>
           <a class="btn btn--solid" href="index.html#contacts">Уточнить выезд</a>
         </div>
@@ -1151,7 +1101,7 @@ ${schema}
           <h2>Не знаете, что выбрать?</h2>
           <p>Опишите комнату и задачу — подскажем решение и посчитаем ориентир. Или откройте калькулятор и сравните варианты.</p>
         </div>
-        <a class="btn btn--solid btn--lg" href="index.html#calculator">Рассчитать стоимость</a>
+        <a class="btn btn--solid btn--lg" href="index.html#calculator">Собрать параметры</a>
       </div>
     </section>
   </main>

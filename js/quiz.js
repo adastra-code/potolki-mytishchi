@@ -62,12 +62,12 @@
   ];
 
   const TYPE = {
-    matte: { title: "матовый потолок", rate: 890, profile: "классический профиль", link: "uslugi.html" },
-    gloss: { title: "глянцевый потолок", rate: 990, profile: "классический профиль", link: "uslugi.html" },
-    satin: { title: "сатиновый потолок", rate: 950, profile: "классический профиль", link: "uslugi.html" },
-    light: { title: "световые линии", rate: 1450, profile: "профиль со световой линией", link: "svetovye-linii.html" },
-    shadow: { title: "теневой потолок", rate: 1590, profile: "теневой профиль", link: "tenevye-potolki.html" },
-    multi: { title: "многоуровневый потолок", rate: 1900, profile: "многоуровневая конструкция", link: "mnogourovnevye-potolki.html" },
+    matte: { title: "матовый потолок", profile: "классический профиль", link: "uslugi.html" },
+    gloss: { title: "глянцевый потолок", profile: "классический профиль", link: "uslugi.html" },
+    satin: { title: "сатиновый потолок", profile: "классический профиль", link: "uslugi.html" },
+    light: { title: "световые линии", profile: "профиль со световой линией", link: "svetovye-linii.html" },
+    shadow: { title: "теневой потолок", profile: "теневой профиль", link: "tenevye-potolki.html" },
+    multi: { title: "многоуровневый потолок", profile: "многоуровневая конструкция", link: "mnogourovnevye-potolki.html" },
   };
 
   const roomLabel = {
@@ -183,13 +183,6 @@
     else if (answers.room?.value === "bath") typeKey = "matte";
 
     const type = TYPE[typeKey];
-    let lightCost = 0;
-    if (answers.light?.value === "chandelier") lightCost = 650;
-    if (answers.light?.value === "spots") {
-      lightCost = Math.max(4, Math.round(area / 3)) * 450;
-    }
-
-    const estimate = Math.max(9900, Math.ceil((area * type.rate + lightCost) / 1000) * 1000);
 
     const reason =
       typeKey === "shadow"
@@ -206,12 +199,12 @@
         : answers.room?.value === "kitchen"
           ? "Для кухни продумываем свет над рабочей зоной и аккуратный обход вытяжки и вентиляции."
           : answers.room?.value === "kids"
-            ? "Для детской подбираем сертифицированные материалы и мягкий свет без резких бликов."
+            ? "Для детской подбираем материалы и мягкий свет без резких бликов."
             : answers.room?.value === "bedroom"
               ? "Для спальни лучше подойдёт мягкий свет и спокойная матовая фактура."
               : "Для гостиной можно добавить световые линии, трек или подсветку по периметру.";
 
-    return { area, areaLabel: areaOption?.label || "15 м²", typeKey, type, estimate, reason, note };
+    return { area, areaLabel: areaOption?.label || "15 м²", typeKey, type, reason, note };
   };
 
   const showResult = () => {
@@ -224,8 +217,7 @@
       `Свет: ${lightLabel[answers.light?.value] || "не указан"}`,
       `Срок: ${whenLabel[answers.when?.value] || "не указан"}`,
       `Рекомендация: ${data.type.title}, ${data.type.profile}`,
-      `Ориентир: от ${new Intl.NumberFormat("ru-RU").format(data.estimate)} ₽`,
-      "Точная смета — после замера.",
+      "Стоимость — после замера.",
     ].join("\n");
 
     comment.value = summary;
@@ -244,9 +236,9 @@
         <div class="quiz-fact"><span>Площадь</span><strong>${data.areaLabel}</strong></div>
         <div class="quiz-fact"><span>Профиль</span><strong>${data.type.profile}</strong></div>
         <div class="quiz-fact"><span>Свет</span><strong>${lightLabel[answers.light?.value] || "Уточним на замере"}</strong></div>
-        <div class="quiz-fact"><span>Ориентир</span><strong>от ${new Intl.NumberFormat("ru-RU").format(data.estimate)} ₽</strong></div>
+        <div class="quiz-fact"><span>Стоимость</span><strong>После замера</strong></div>
       </div>
-      <p class="quiz-result__note">${data.note} Ориентир не заменяет смету: точная цена зависит от геометрии, профиля и света.</p>
+      <p class="quiz-result__note">${data.note} Стоимость зависит от геометрии, профиля и света — рассчитаем её после замера.</p>
       <div class="quiz-result__actions">
         <a class="btn btn--solid" href="${data.type.link}">Подробнее об услуге</a>
         <button class="quiz-restart" type="button" id="quizRestart">Пройти заново</button>
