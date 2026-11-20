@@ -1,0 +1,89 @@
+/* =========================================================
+   Страница цен
+   ========================================================= */
+
+.price-examples {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.price-example {
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(15, 17, 21, .08);
+}
+.price-example h3 {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+.price-example ul {
+  display: grid;
+  gap: 0;
+  margin: 0 0 12px;
+}
+.price-example li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(15, 17, 21, .07);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.price-example li strong {
+  color: var(--ink);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.price-example__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.price-example__total strong {
+  font-size: 20px;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+
+.price-factors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+.price-factors > div {
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(15, 17, 21, .07);
+}
+.price-factors h3 {
+  margin-bottom: 5px;
+  font-size: 15px;
+}
+.price-factors p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .price-examples { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .price-factors { grid-template-columns: 1fr; }
+}

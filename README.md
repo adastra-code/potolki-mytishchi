@@ -28,6 +28,7 @@ index.html        — лендинг
 gallery.html      — все 69 работ, фильтры и лайтбокс
 cases.html        — кейсы (пока шаблоны, noindex)
 uslugi.html       — хаб услуг и комнат
+prices.html       — полный прайс и примеры смет
 tenevye-potolki.html, svetovye-linii.html, paryashchie-potolki.html, mnogourovnevye-potolki.html — услуги
 kuhnya.html, vannaya.html, spalnya.html, detskaya.html — комнаты
 korolev.html, pushkino.html, shchyolkovo.html, ivanteevka.html — города
@@ -39,6 +40,7 @@ css/style.css     — общие стили, адаптив, анимации
 css/gallery.css   — стили галереи, фильтров и лайтбокса
 css/cases.css     — стили страницы кейсов
 css/seo.css       — стили SEO-страниц
+css/prices.css    — стили страницы цен
 js/config.js      — настройки заявок и WhatsApp
 js/main.js        — меню, калькулятор, формы, аккордеон
 js/gallery.js     — галерея и просмотрщик фотографий
@@ -84,14 +86,16 @@ package.json      — скрипты запуска
 - страница `cases.html` — 6 кейсов-шаблонов с явной пометкой «Пример»;
 - SEO-кластер: хаб `uslugi.html`, 4 страницы услуг, 4 страницы комнат,
   4 города — Королёв, Пушкино, Щёлково, Ивантеевка — и страницы доверия
-  «О компании», «Гарантии», «Отзывы».
+  «О компании», «Гарантии», «Отзывы»;
+- страница `prices.html` — полный прайс, состав «под ключ» и примеры смет.
 
 ## Как поменять контент
 
 - **Телефон, адрес, часы работы** — поиском по `+7 (991) 969-09-99`,
   `Борисовка` и `Круглосуточно` в `index.html`. Телефон также указан в JSON-LD
   в `<head>` (для поисковиков).
-- **Цены на профили** — блок `.price-list` в `index.html`.
+- **Цены на профили** — блок `.price-list` в `index.html`, полный прайс —
+  `prices.html`. Базовые ставки калькулятора — в `js/main.js`.
 - **Калькулятор** — ставки в `js/main.js` (`PRICE_LIGHT`, `PRICE_CHANDELIER`,
   `PRICE_PIPE`, `PRICE_CORNER`, `PRICE_DEMOLITION`, `MIN_ORDER`) и значения
   `value` у radio в `#calculator`. Кнопка «Отправить расчёт» переносит итог
@@ -154,8 +158,8 @@ metrikaId: "12345678",
 
 Подойдёт GitHub Pages, Netlify, Vercel или обычный хостинг: достаточно загрузить
 `index.html`, `gallery.html`, `cases.html`, `privacy.html`, `uslugi.html`,
-SEO-страницы, страницы доверия, папки `css`, `js` и `assets`, а также
-`robots.txt` и `sitemap.xml`. Никаких сборок и зависимостей нет.
+`prices.html`, SEO-страницы, страницы доверия, папки `css`, `js` и `assets`,
+а также `robots.txt` и `sitemap.xml`. Никаких сборок и зависимостей нет.
 Сайт уже опубликован на GitHub Pages, обновление — обычный `git push`
 в ветку `main`.
 

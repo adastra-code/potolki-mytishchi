@@ -61,6 +61,7 @@ const footer = `
       </div>
       <nav class="footer__nav" aria-label="Навигация в подвале">
         <a href="uslugi.html">Услуги</a>
+        <a href="prices.html">Цены</a>
         <a href="index.html#calculator">Калькулятор</a>
         <a href="gallery.html">Работы</a>
         <a href="cases.html">Кейсы</a>
@@ -1057,6 +1058,10 @@ ${schema}
           <span>Монтаж за 1 день</span>
           <span>Замер бесплатно</span>
           <span>Гарантия по договору</span>
+        </div>
+        <div class="seo-hero__cta">
+          <a class="btn btn--solid btn--lg" href="prices.html">Смотреть цены</a>
+          <a class="btn btn--ghost btn--lg" href="index.html#calculator">Открыть калькулятор</a>
         </div>
       </div>
     </section>
