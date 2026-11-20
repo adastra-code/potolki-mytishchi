@@ -9,7 +9,7 @@ const nav = `
       <nav class="nav" id="nav" aria-label="Основная навигация">
         <a href="uslugi.html">Услуги</a>
         <a href="index.html#calculator">Калькулятор</a>
-        <a href="quiz.html">Квиз</a>
+        <a href="quiz.html">Тест</a>
         <a href="gallery.html">Работы</a>
         <a href="index.html#process">Этапы</a>
         <a href="index.html#reviews">Отзывы</a>
@@ -65,7 +65,7 @@ const footer = `
         <a href="prices.html">Цены</a>
         <a href="materialy.html">Материалы</a>
         <a href="index.html#calculator">Калькулятор</a>
-        <a href="quiz.html">Квиз</a>
+        <a href="quiz.html">Тест</a>
         <a href="gallery.html">Работы</a>
         <a href="cases.html">Кейсы</a>
         <a href="o-kompanii.html">О компании</a>
