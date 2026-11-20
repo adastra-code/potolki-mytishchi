@@ -1,9 +1,9 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { allPages, services, rooms } from "./seo-data.mjs";
+import { allPages, services, rooms, cities } from "./seo-data.mjs";
 
 const root = process.cwd();
 const SITE = "https://adastra-code.github.io/potolki-mytishchi";
-const V = "20261121c";
+const V = "20261121d";
 
 const nav = `
       <nav class="nav" id="nav" aria-label="Основная навигация">
@@ -366,8 +366,278 @@ ${footer}${mobileBar}
 `;
 };
 
-const renderHub = () => {
-  const serviceCards = services
+const renderCity = (page) => {
+  const cityPrices = [
+    { name: "Матовый потолок", price: "от 890 ₽/м²" },
+    { name: "Глянцевый потолок", price: "от 990 ₽/м²" },
+    { name: "Сатиновый потолок", price: "от 950 ₽/м²" },
+    { name: "Теневой потолок", price: "от 1 590 ₽/м²" },
+    { name: "Световые линии", price: "от 1 450 ₽/м²" },
+  ];
+
+  const crumbs = [
+    { "@type": "ListItem", position: 1, name: "Главная", item: `${SITE}/` },
+    { "@type": "ListItem", position: 2, name: "Услуги", item: `${SITE}/uslugi.html` },
+    { "@type": "ListItem", position: 3, name: "Города", item: `${SITE}/uslugi.html#geo` },
+    { "@type": "ListItem", position: 4, name: page.short, item: `${SITE}/${page.slug}.html` },
+  ];
+
+  const schema = JSON.stringify(
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        name: page.h1,
+        description: page.description,
+        serviceType: "Натяжные потолки",
+        areaServed: [page.short, "Мытищи", "Московская область"],
+        provider: {
+          "@type": "LocalBusiness",
+          name: "Натяжные потолки",
+          telephone: "+7-991-969-09-99",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "ул. Борисовка, 12А",
+            addressLocality: "Мытищи",
+            addressRegion: "Московская область",
+            addressCountry: "RU",
+          },
+        },
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "RUB",
+          price: page.priceFrom,
+          availability: "https://schema.org/InStock",
+        },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: page.faq.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: crumbs,
+      },
+    ],
+    null,
+    2
+  );
+
+  const features = page.features
+    .map(
+      (item) => `
+            <div class="seo-benefit">
+              <h3>${esc(item.title)}</h3>
+              <p>${esc(item.text)}</p>
+            </div>`
+    )
+    .join("");
+
+  const priceRows = cityPrices
+    .map((item) => `<tr><td>${esc(item.name)}</td><td>${esc(item.price)}</td></tr>`)
+    .join("");
+
+  const steps = [
+    `Заявка: уточняем адрес в ${page.short}, площадь и удобное время.`,
+    "Замер: приезжаем с образцами, проверяем стены, высоту и коммуникации.",
+    "Смета: фиксируем материалы, работы и срок в договоре.",
+    "Монтаж: привозим комплект, устанавливаем потолок и убираем помещение.",
+  ]
+    .map((item) => `<li>${esc(item)}</li>`)
+    .join("");
+
+  const photos = page.photos
+    .map(
+      (item) => `<figure><img src="${item.src}" alt="${esc(item.alt)}" loading="lazy" /></figure>`
+    )
+    .join("");
+
+  const faq = page.faq
+    .map(
+      (item) => `
+            <details class="seo-faq__item">
+              <summary>${esc(item.q)}</summary>
+              <p>${esc(item.a)}</p>
+            </details>`
+    )
+    .join("");
+
+  const relatedCityCards = page.relatedCities
+    .map((slug) => cities.find((item) => item.slug === slug))
+    .filter(Boolean)
+    .map(
+      (item) => `
+          <a class="seo-card" href="${item.slug}.html">
+            <img src="${item.photos[0].src}" alt="Натяжные потолки в ${esc(item.short)}" loading="lazy" />
+            <div class="seo-card__body">
+              <h3>Потолки в ${esc(item.short)}</h3>
+              <p>Выезд из Мытищ ${esc(item.distance)} · ${esc(item.time)}.</p>
+              <span>Подробнее →</span>
+            </div>
+          </a>`
+    )
+    .join("");
+
+  const relatedServiceCards = page.relatedServices
+    .map((slug) => allPages.find((item) => item.slug === slug))
+    .filter(Boolean)
+    .map(
+      (item) => `
+          <a class="seo-card" href="${item.slug}.html">
+            <img src="${item.cardImage}" alt="${esc(item.cardTitle)}" loading="lazy" />
+            <div class="seo-card__body">
+              <h3>${esc(item.cardTitle)}</h3>
+              <p>${esc(item.cardText)}</p>
+              <span>Подробнее · ${esc(item.priceLabel)} →</span>
+            </div>
+          </a>`
+    )
+    .join("");
+
+  return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${esc(page.title)}</title>
+  <meta name="description" content="${esc(page.description)}" />
+  <link rel="canonical" href="${SITE}/${page.slug}.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="${esc(page.title)}" />
+  <meta property="og:description" content="${esc(page.description)}" />
+  <meta property="og:url" content="${SITE}/${page.slug}.html" />
+  <meta property="og:image" content="${SITE}/${page.photos[0].src}" />
+  <meta property="og:site_name" content="Потолки Мытищи" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f1115" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1115'/%3E%3Cpath d='M14 40h36M20 31h24M26 22h12' stroke='%23c8a165' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=${V}" />
+  <link rel="stylesheet" href="css/seo.css?v=${V}" />
+  <script type="application/ld+json">
+${schema}
+  </script>
+</head>
+<body class="seo-page">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>${header}
+
+  <main id="main">
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Хлебные крошки">
+        <a href="index.html">Главная</a><span>/</span>
+        <a href="uslugi.html">Услуги</a><span>/</span>
+        <a href="uslugi.html#geo">Города</a><span>/</span>
+        <span>${esc(page.short)}</span>
+      </nav>
+    </div>
+
+    <section class="seo-hero">
+      <div class="container">
+        <p class="eyebrow">Город</p>
+        <h1>${esc(page.h1)}</h1>
+        <p class="seo-hero__lead">${esc(page.lead)}</p>
+        <div class="seo-meta">
+          <span>${esc(page.distance)} от Мытищ</span>
+          <span>${esc(page.time)} в пути</span>
+          <span>${esc(page.priceLabel)}</span>
+          <span>Замер бесплатно</span>
+        </div>
+        <div class="seo-hero__cta">
+          <a class="btn btn--solid btn--lg" href="index.html#calculator">Рассчитать стоимость</a>
+          <a class="btn btn--ghost btn--lg" href="index.html#contacts">Записаться на замер</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="container seo-layout">
+      <article class="seo-article">
+        ${page.intro.map((p) => `<p>${esc(p)}</p>`).join("")}
+
+        <h2>Районы и выезд</h2>
+        <div class="seo-districts">
+          ${page.districts.map((district) => `<span>${esc(district)}</span>`).join("")}
+        </div>
+        <p>Дорога из Мытищ занимает ${esc(page.time)} — около ${esc(page.distance)} по дороге. Время зависит от пробок; точный выезд согласуем при заявке.</p>
+
+        <h2>Что учесть в ${esc(page.short)}</h2>
+        <div class="seo-benefits">${features}</div>
+
+        <h2>Цены</h2>
+        <div class="seo-table-wrap">
+          <table class="seo-table">
+            <thead><tr><th>Вариант</th><th>Цена</th></tr></thead>
+            <tbody>${priceRows}</tbody>
+          </table>
+        </div>
+        <p class="seo-note">Цены ориентировочные и зависят от площади, геометрии, профиля, света и состояния основания. Точную смету фиксируем после бесплатного замера.</p>
+
+        <h2>Как проходит замер и монтаж</h2>
+        <ol class="seo-steps">${steps}</ol>
+
+        <h2>Фото работ</h2>
+        <div class="seo-gallery">${photos}</div>
+
+        <h2>Частые вопросы</h2>
+        <div class="seo-faq">${faq}</div>
+
+        <div class="seo-article-cta">
+          <h2>Нужен потолок в ${esc(page.short)}?</h2>
+          <p>Приедем на замер, привезём образцы и назовём точную цену. Выезд из Мытищ — ${esc(page.distance)}.</p>
+          <div>
+            <a class="btn btn--solid" href="index.html#calculator">Рассчитать</a>
+            <a class="btn btn--ghost" href="tel:+79919690999">+7 (991) 969-09-99</a>
+          </div>
+        </div>
+      </article>
+
+      <aside class="seo-aside">
+        <div class="seo-cta">
+          <p class="eyebrow">Бесплатный замер</p>
+          <h2>Рассчитать в ${esc(page.short)}</h2>
+          <p>Привезём образцы, замерим комнату и зафиксируем смету в договоре.</p>
+          <a class="btn btn--solid" href="index.html#calculator">Открыть калькулятор</a>
+          <a class="seo-cta__phone" href="tel:+79919690999">+7 (991) 969-09-99</a>
+        </div>
+        <div class="seo-links">
+          <h3>Другие города</h3>
+          ${cities
+            .filter((item) => item.slug !== page.slug)
+            .map((item) => `<a href="${item.slug}.html">Потолки в ${esc(item.short)}</a>`)
+            .join("")}
+          <a href="uslugi.html#geo">Все города →</a>
+        </div>
+        <div class="seo-links">
+          <h3>Услуги</h3>
+          ${services.map((item) => `<a href="${item.slug}.html">${esc(item.cardTitle)}</a>`).join("")}
+          <a href="uslugi.html">Все услуги →</a>
+        </div>
+      </aside>
+    </div>
+
+    <section class="seo-related">
+      <div class="container">
+        <h2>Смотрите также</h2>
+        <div class="seo-related-grid">${relatedCityCards}${relatedServiceCards}</div>
+      </div>
+    </section>
+  </main>
+${footer}${mobileBar}
+  <script src="js/main.js?v=${V}"></script>
+</body>
+</html>
+`;
+};
+
+const renderHub = () => {  const serviceCards = services
     .map(
       (item) => `
           <a class="seo-card" href="${item.slug}.html">
@@ -484,7 +754,7 @@ ${schema}
       </div>
     </section>
 
-    <section class="seo-hub">
+    <section class="seo-hub" id="geo">
       <div class="container seo-geo">
         <div>
           <h2>География работ</h2>
@@ -497,8 +767,10 @@ ${schema}
           <a class="btn btn--solid" href="index.html#contacts">Уточнить выезд</a>
         </div>
         <ul class="seo-geo__list">
-          <li>Мытищи</li><li>Королёв</li><li>Пушкино</li><li>Щёлково</li>
-          <li>Ивантеевка</li><li>Москва</li><li>Ближайшие районы МО</li>
+          <li>Мытищи</li>
+          ${cities.map((city) => `<li><a href="${city.slug}.html">${esc(city.short)}</a></li>`).join("\n          ")}
+          <li>Москва</li>
+          <li>Ближайшие районы МО</li>
         </ul>
       </div>
     </section>
@@ -523,6 +795,10 @@ ${footer}${mobileBar}
 for (const page of allPages) {
   await writeFile(`${root}\\${page.slug}.html`, renderPage(page), "utf8");
   console.log("wrote", `${page.slug}.html`);
+}
+for (const city of cities) {
+  await writeFile(`${root}\\${city.slug}.html`, renderCity(city), "utf8");
+  console.log("wrote", `${city.slug}.html`);
 }
 await writeFile(`${root}\\uslugi.html`, renderHub(), "utf8");
 console.log("wrote uslugi.html");
