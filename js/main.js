@@ -410,6 +410,7 @@
   let toastTimer;
 
   const showToast = (text) => {
+    if (!toastEl) return;
     toastEl.textContent = text;
     toastEl.classList.add("is-visible");
     clearTimeout(toastTimer);
@@ -495,7 +496,7 @@
     field.classList.add("is-invalid");
     const error = $(".field__error", field);
     if (error) error.textContent = message;
-    const input = $("input, textarea", field);
+    const input = $("input, textarea, select", field);
     if (input) input.setAttribute("aria-invalid", "true");
   };
 
@@ -503,12 +504,56 @@
     field.classList.remove("is-invalid");
     const error = $(".field__error", field);
     if (error) error.textContent = "";
-    const input = $("input, textarea", field);
+    const input = $("input, textarea, select", field);
     if (input) input.removeAttribute("aria-invalid");
   };
 
+  const dateToIso = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const dateField = $('input[type="date"]');
+  if (dateField) {
+    const today = new Date();
+    const max = new Date();
+    max.setDate(max.getDate() + 90);
+    dateField.min = dateToIso(today);
+    dateField.max = dateToIso(max);
+    dateField.value = dateToIso(today);
+
+    const chips = $$(".date-chip");
+    const setChip = (offset) => {
+      chips.forEach((chip) =>
+        chip.classList.toggle("is-active", Number(chip.dataset.dateOffset) === offset)
+      );
+    };
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const date = new Date();
+        date.setDate(date.getDate() + Number(chip.dataset.dateOffset));
+        dateField.value = dateToIso(date);
+        setChip(Number(chip.dataset.dateOffset));
+        dateField.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+    });
+
+    dateField.addEventListener("change", () => {
+      const diff = Math.round(
+        (new Date(`${dateField.value}T00:00:00`) - new Date(`${dateToIso(new Date())}T00:00:00`)) /
+          86400000
+      );
+      setChip(diff);
+    });
+  }
+
   $$(".form").forEach((form) => {
-    const fields = $$(".field", form).filter((f) => $("input[required], textarea[required]", f));
+    const fields = $$(".field", form).filter((f) =>
+      $("input[required], textarea[required], select[required]", f)
+    );
     const consent = $('input[name="consent"]', form);
     const consentWrap = consent?.closest(".consent");
     const consentError = $(".consent__error", form);
@@ -518,8 +563,9 @@
     const isHero = form.dataset.form === "hero";
 
     fields.forEach((field) => {
-      const input = $("input, textarea", field);
+      const input = $("input, textarea, select", field);
       input.addEventListener("input", () => clearError(field));
+      input.addEventListener("change", () => clearError(field));
     });
 
     if (consent) {
@@ -560,6 +606,19 @@
         `Телефон: ${data.phone}`,
       ];
       if (data.area) lines.push(`Площадь: ${data.area} м²`);
+      if (data.date) {
+        const date = new Date(`${data.date}T00:00:00`);
+        if (!Number.isNaN(date.getTime())) {
+          lines.push(
+            `Дата: ${date.toLocaleDateString("ru-RU", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}`
+          );
+        }
+      }
+      if (data.time) lines.push(`Время: ${data.time}`);
       if (data.comment) lines.push(`Комментарий: ${data.comment}`);
       lines.push(`Страница: ${location.href}`);
       return lines.join("\n");
@@ -583,10 +642,23 @@
       let valid = true;
 
       fields.forEach((field) => {
-        const input = $("input, textarea", field);
+        const input = $("input, textarea, select", field);
         const value = input.value.trim();
 
-        if (input.type === "tel") {
+        if (input.tagName === "SELECT") {
+          if (!value) {
+            showError(field, "Выберите время");
+            valid = false;
+          } else clearError(field);
+        } else if (input.type === "date") {
+          if (!value) {
+            showError(field, "Выберите дату");
+            valid = false;
+          } else if (input.min && value < input.min) {
+            showError(field, "Дата уже прошла — выберите другую");
+            valid = false;
+          } else clearError(field);
+        } else if (input.type === "tel") {
           if (value.replace(/\D/g, "").length !== 11) {
             showError(field, "Введите номер полностью: +7 (___) ___-__-__");
             valid = false;
@@ -604,7 +676,7 @@
       }
 
       if (!valid) {
-        const firstInvalid = $(".field.is-invalid input, .field.is-invalid textarea", form);
+        const firstInvalid = $(".field.is-invalid input, .field.is-invalid textarea, .field.is-invalid select", form);
         if (firstInvalid) firstInvalid.focus();
         else consent?.focus();
         return;
@@ -627,7 +699,7 @@
 
           showSuccess("Заявка отправлена! Свяжемся с вами в течение 15 минут.");
           showToast("Заявка отправлена. Перезвоним в течение 15 минут!");
-          reachGoal("form_submit");
+          reachGoal(form.dataset.form === "booking" ? "booking_submit" : "form_submit");
           resetForm();
         } catch (error) {
           showToast(`Не удалось отправить. Позвоните ${config.phone || "+7 (991) 969-09-99"}.`);
@@ -644,7 +716,7 @@
 
       showSuccess("Открыли WhatsApp с готовым текстом. Нажмите «Отправить» в чате — заявка попадёт к нам.", waUrl);
       showToast("Осталось отправить сообщение в WhatsApp");
-      reachGoal("form_whatsapp");
+      reachGoal(form.dataset.form === "booking" ? "booking_whatsapp" : "form_whatsapp");
       resetForm();
       button.disabled = false;
       button.textContent = original;

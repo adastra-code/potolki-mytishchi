@@ -14,7 +14,7 @@ const nav = `
         <a href="index.html#reviews">Отзывы</a>
         <a href="index.html#contacts">Контакты</a>
         <div class="nav__mobile-cta">
-          <a class="btn btn--solid btn--block" href="index.html#contacts">Замер бесплатно</a>
+          <a class="btn btn--solid btn--block" href="zapis.html">Замер бесплатно</a>
           <a class="nav__phone" href="tel:+79919690999">+7 (991) 969-09-99</a>
         </div>
       </nav>`;
@@ -36,7 +36,7 @@ const header = `
           <span>Круглосуточно, без выходных</span>
           <strong>+7 (991) 969-09-99</strong>
         </a>
-        <a class="btn btn--solid" href="index.html#contacts">Замер бесплатно</a>
+        <a class="btn btn--solid" href="zapis.html">Замер бесплатно</a>
         <button class="burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
           <span></span><span></span><span></span>
         </button>
@@ -68,6 +68,7 @@ const footer = `
         <a href="o-kompanii.html">О компании</a>
         <a href="garantii.html">Гарантии</a>
         <a href="otzyvy.html">Отзывы</a>
+        <a href="zapis.html">Запись на замер</a>
         <a href="index.html#contacts">Контакты</a>
       </nav>
       <div class="footer__contacts">
