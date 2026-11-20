@@ -4,6 +4,9 @@
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
+  const config = window.SITE_CONFIG || {};
+  const leadsEndpoint = String(config.leadsEndpoint || "").trim();
+
   /* ---------------------------------------------------------
      Header: shadow after scroll
      --------------------------------------------------------- */
@@ -231,13 +234,76 @@
 
   $$(".form").forEach((form) => {
     const fields = $$(".field", form).filter((f) => $("input[required], textarea[required]", f));
+    const consent = $('input[name="consent"]', form);
+    const consentWrap = consent?.closest(".consent");
+    const consentError = $(".consent__error", form);
+    const button = $('button[type="submit"]', form);
+    const success = $(".form__success", form);
+    const channel = $(".form__channel", form);
+    const isHero = form.dataset.form === "hero";
 
     fields.forEach((field) => {
       const input = $("input, textarea", field);
       input.addEventListener("input", () => clearError(field));
     });
 
-    form.addEventListener("submit", (event) => {
+    if (consent) {
+      consent.addEventListener("change", () => {
+        consentWrap?.classList.remove("is-invalid");
+        if (consentError) consentError.hidden = true;
+      });
+    }
+
+    $$(".consent__text a", form).forEach((link) => {
+      link.addEventListener("click", (event) => event.stopPropagation());
+    });
+
+    const resetForm = () => {
+      form.reset();
+      $$("input[type='tel']", form).forEach((i) => (i.value = ""));
+      consentWrap?.classList.remove("is-invalid");
+      if (consentError) consentError.hidden = true;
+    };
+
+    const collectData = () => {
+      const data = {};
+      new FormData(form).forEach((value, key) => {
+        if (typeof value === "string" && value.trim()) data[key] = value.trim();
+      });
+      data.consent = Boolean(consent?.checked);
+      data.source = form.dataset.form || "site";
+      data.page = location.href;
+      data.referrer = document.referrer || "";
+      data.sentAt = new Date().toISOString();
+      return data;
+    };
+
+    const whatsappMessage = (data) => {
+      const lines = [
+        `Заявка с сайта ${config.siteName || "Потолки Мытищи"}`,
+        `Имя: ${data.name}`,
+        `Телефон: ${data.phone}`,
+      ];
+      if (data.area) lines.push(`Площадь: ${data.area} м²`);
+      if (data.comment) lines.push(`Комментарий: ${data.comment}`);
+      lines.push(`Страница: ${location.href}`);
+      return lines.join("\n");
+    };
+
+    const showSuccess = (text, waUrl) => {
+      if (!success) return;
+      if (waUrl) {
+        success.innerHTML = `${text} <a href="${waUrl}" target="_blank" rel="noopener">Открыть чат</a>`;
+      } else {
+        success.textContent = text;
+      }
+      success.hidden = false;
+      setTimeout(() => {
+        if (success) success.hidden = true;
+      }, 15000);
+    };
+
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
       let valid = true;
 
@@ -256,50 +322,64 @@
         } else clearError(field);
       });
 
+      if (consent && !consent.checked) {
+        consentWrap?.classList.add("is-invalid");
+        if (consentError) consentError.hidden = false;
+        valid = false;
+      }
+
       if (!valid) {
-        $(".field.is-invalid input, .field.is-invalid textarea", form)?.focus();
+        const firstInvalid = $(".field.is-invalid input, .field.is-invalid textarea", form);
+        if (firstInvalid) firstInvalid.focus();
+        else consent?.focus();
         return;
       }
 
-      const button = $('button[type="submit"]', form);
-      const success = $(".form__success", form);
       const original = button.textContent;
-
       button.disabled = true;
       button.textContent = "Отправляем…";
 
-      setTimeout(() => {
-        button.disabled = false;
-        button.textContent = original;
-        form.reset();
-        $$("input[type='tel']", form).forEach((i) => (i.value = ""));
-        if (success) {
-          success.hidden = false;
-          setTimeout(() => (success.hidden = true), 6000);
+      const data = collectData();
+
+      if (leadsEndpoint) {
+        try {
+          const response = await fetch(leadsEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify(data),
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          showSuccess("Заявка отправлена! Свяжемся с вами в течение 15 минут.");
+          showToast("Заявка отправлена. Перезвоним в течение 15 минут!");
+          resetForm();
+        } catch (error) {
+          showToast(`Не удалось отправить. Позвоните ${config.phone || "+7 (991) 969-09-99"}.`);
+        } finally {
+          button.disabled = false;
+          button.textContent = original;
         }
-        showToast("Заявка отправлена. Перезвоним в течение 15 минут!");
-      }, 800);
+        return;
+      }
+
+      const waUrl = `https://wa.me/${config.whatsapp || "79919690999"}?text=${encodeURIComponent(whatsappMessage(data))}`;
+      const win = window.open(waUrl, "_blank");
+      if (win) win.opener = null;
+
+      showSuccess("Открыли WhatsApp с готовым текстом. Нажмите «Отправить» в чате — заявка попадёт к нам.", waUrl);
+      showToast("Осталось отправить сообщение в WhatsApp");
+      resetForm();
+      button.disabled = false;
+      button.textContent = original;
     });
+
+    if (!leadsEndpoint) {
+      if (channel) channel.hidden = false;
+      if (button) {
+        button.textContent = isHero ? "Получить расчёт в WhatsApp" : "Записаться через WhatsApp";
+      }
+    }
   });
-
-  /* ---------------------------------------------------------
-     Privacy modal
-     --------------------------------------------------------- */
-  const privacy = $("#privacy");
-  if (privacy && typeof privacy.showModal === "function") {
-    $$('a[href="#privacy"]').forEach((link) => {
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        closeNav();
-        privacy.showModal();
-      });
-    });
-
-    $("[data-close-privacy]", privacy)?.addEventListener("click", () => privacy.close());
-    privacy.addEventListener("click", (event) => {
-      if (event.target === privacy) privacy.close();
-    });
-  }
 
   /* ---------------------------------------------------------
      Misc

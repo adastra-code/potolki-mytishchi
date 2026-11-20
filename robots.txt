@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://adastra-code.github.io/potolki-mytishchi/sitemap.xml
