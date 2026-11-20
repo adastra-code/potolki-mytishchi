@@ -472,6 +472,17 @@ h3 {
   color: var(--muted);
   padding-bottom: 6px;
 }
+.section__link {
+  display: inline-block;
+  margin-top: 10px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(138, 106, 47, .4);
+  font-size: 13px;
+  font-weight: 700;
+  color: #8a6a2f;
+  transition: color .2s, border-color .2s;
+}
+.section__link:hover { color: var(--ink); border-color: var(--ink); }
 
 /* ---------- Cards / services ---------- */
 .cards {

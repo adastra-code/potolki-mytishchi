@@ -2,7 +2,7 @@
   "name": "potolki-mytishchi",
   "version": "1.0.0",
   "private": true,
-  "description": "Сайт компании по натяжным потолкам в Мытищах: лендинг и галерея работ",
+  "description": "Сайт компании по натяжным потолкам в Мытищах: лендинг, галерея, кейсы и SEO-страницы",
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
