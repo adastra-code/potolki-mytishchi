@@ -76,7 +76,8 @@
   const lightsOut = $("#lightsOut");
   const totalOut = $("#totalOut");
   const demolition = $("#install");
-  const typeChips = $$('input[name="type"]', $("#typeChips"));
+  const typeChipsRoot = $("#typeChips");
+  const typeChips = typeChipsRoot ? $$('input[name="type"]', typeChipsRoot) : [];
 
   const PRICE_LIGHT = 450;
   const PRICE_DEMOLITION = 180;
