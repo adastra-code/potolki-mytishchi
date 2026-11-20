@@ -3,12 +3,13 @@ import { allPages, services, rooms, cities, trustPages, reviewsData } from "./se
 
 const root = process.cwd();
 const SITE = "https://adastra-code.github.io/potolki-mytishchi";
-const V = "20261121g";
+const V = "20261122e";
 
 const nav = `
       <nav class="nav" id="nav" aria-label="Основная навигация">
         <a href="uslugi.html">Услуги</a>
         <a href="index.html#calculator">Калькулятор</a>
+        <a href="quiz.html">Квиз</a>
         <a href="gallery.html">Работы</a>
         <a href="index.html#process">Этапы</a>
         <a href="index.html#reviews">Отзывы</a>
@@ -63,6 +64,7 @@ const footer = `
         <a href="uslugi.html">Услуги</a>
         <a href="prices.html">Цены</a>
         <a href="index.html#calculator">Калькулятор</a>
+        <a href="quiz.html">Квиз</a>
         <a href="gallery.html">Работы</a>
         <a href="cases.html">Кейсы</a>
         <a href="o-kompanii.html">О компании</a>

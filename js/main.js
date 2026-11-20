@@ -699,7 +699,12 @@
 
           showSuccess("Заявка отправлена! Свяжемся с вами в течение 15 минут.");
           showToast("Заявка отправлена. Перезвоним в течение 15 минут!");
-          reachGoal(form.dataset.form === "booking" ? "booking_submit" : "form_submit");
+          const goal = form.dataset.form === "booking"
+            ? "booking_submit"
+            : form.dataset.form === "quiz"
+              ? "quiz_submit"
+              : "form_submit";
+          reachGoal(goal);
           resetForm();
         } catch (error) {
           showToast(`Не удалось отправить. Позвоните ${config.phone || "+7 (991) 969-09-99"}.`);
@@ -716,7 +721,12 @@
 
       showSuccess("Открыли WhatsApp с готовым текстом. Нажмите «Отправить» в чате — заявка попадёт к нам.", waUrl);
       showToast("Осталось отправить сообщение в WhatsApp");
-      reachGoal(form.dataset.form === "booking" ? "booking_whatsapp" : "form_whatsapp");
+      const goal = form.dataset.form === "booking"
+        ? "booking_whatsapp"
+        : form.dataset.form === "quiz"
+          ? "quiz_whatsapp"
+          : "form_whatsapp";
+      reachGoal(goal);
       resetForm();
       button.disabled = false;
       button.textContent = original;
