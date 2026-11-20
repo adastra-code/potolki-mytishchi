@@ -260,8 +260,8 @@
           <p class="eyebrow">Онлайн-калькулятор</p>
           <h2>Узнайте цену<span class="accent"> за минуту</span></h2>
           <p>
-            Передвиньте ползунки — покажем ориентировочную стоимость «под ключ»:
-            полотно, профиль, монтаж и вывоз мусора уже включены.
+            Передвиньте ползунки — покажем ориентировочную стоимость: полотно,
+            монтаж, светильники, люстры, обход труб и демонтаж.
           </p>
           <ul class="check-list">
             <li>Замер и консультация — бесплатно</li>
@@ -287,13 +287,26 @@
               <label class="chip"><input type="radio" name="type" value="950" /><span>Сатиновый</span></label>
               <label class="chip"><input type="radio" name="type" value="1450" /><span>Световые линии</span></label>
               <label class="chip"><input type="radio" name="type" value="1590" /><span>Теневой</span></label>
+              <label class="chip"><input type="radio" name="type" value="1900" /><span>Многоуровневый</span></label>
             </div>
           </fieldset>
 
-          <div class="calc__row">
+          <div class="calc__grid">
             <label class="field field--range">
               <span>Точечные светильники <output id="lightsOut">6 шт</output></span>
               <input type="range" id="lights" min="0" max="24" step="1" value="6" />
+            </label>
+            <label class="field field--range">
+              <span>Люстры <output id="chandeliersOut">0 шт</output></span>
+              <input type="range" id="chandeliers" min="0" max="4" step="1" value="0" />
+            </label>
+            <label class="field field--range">
+              <span>Обход труб <output id="pipesOut">0 шт</output></span>
+              <input type="range" id="pipes" min="0" max="4" step="1" value="0" />
+            </label>
+            <label class="field field--range">
+              <span>Дополнительные углы <output id="cornersOut">0 шт</output></span>
+              <input type="range" id="corners" min="0" max="8" step="1" value="0" />
             </label>
           </div>
 
@@ -303,13 +316,16 @@
             <span>Демонтаж старого потолка</span>
           </label>
 
+          <div class="calc__breakdown" id="breakdown"></div>
+
           <div class="calc__total">
             <div>
               <span>Ориентировочная стоимость</span>
-              <strong id="totalOut">27 860 ₽</strong>
+              <strong id="totalOut">28 380 ₽</strong>
             </div>
-            <a class="btn btn--solid" href="#contacts">Записаться на замер</a>
+            <button class="btn btn--solid" type="button" id="calcSend">Отправить расчёт</button>
           </div>
+          <p class="calc__note">Скрытые карнизы и сложные конструкции рассчитываются после замера.</p>
         </form>
       </div>
     </section>

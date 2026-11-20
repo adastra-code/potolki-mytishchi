@@ -75,16 +75,28 @@
      --------------------------------------------------------- */
   const area = $("#area");
   const lights = $("#lights");
+  const chandeliers = $("#chandeliers");
+  const pipes = $("#pipes");
+  const corners = $("#corners");
   const areaOut = $("#areaOut");
   const lightsOut = $("#lightsOut");
+  const chandeliersOut = $("#chandeliersOut");
+  const pipesOut = $("#pipesOut");
+  const cornersOut = $("#cornersOut");
   const totalOut = $("#totalOut");
+  const breakdown = $("#breakdown");
   const demolition = $("#install");
   const typeChipsRoot = $("#typeChips");
   const typeChips = typeChipsRoot ? $$('input[name="type"]', typeChipsRoot) : [];
 
   const PRICE_LIGHT = 450;
+  const PRICE_CHANDELIER = 650;
+  const PRICE_PIPE = 600;
+  const PRICE_CORNER = 300;
   const PRICE_DEMOLITION = 180;
   const MIN_ORDER = 9900;
+
+  let calcState = null;
 
   const money = (n) => `${new Intl.NumberFormat("ru-RU").format(n)} ₽`;
 
@@ -99,22 +111,67 @@
   const calcTotal = () => {
     const s = Number(area.value);
     const l = Number(lights.value);
-    const rate = Number(typeChips.find((c) => c.checked)?.value || 890);
+    const ch = Number(chandeliers.value);
+    const p = Number(pipes.value);
+    const c = Number(corners.value);
 
-    let total = s * rate + l * PRICE_LIGHT;
-    if (demolition.checked) total += s * PRICE_DEMOLITION;
-    total = Math.max(MIN_ORDER, Math.round(total / 10) * 10);
+    const selected = typeChips.find((chip) => chip.checked);
+    const rate = Number(selected?.value || 890);
+    const typeName = selected?.parentElement.querySelector("span")?.textContent.trim() || "Матовый";
+
+    const rows = [
+      { label: `Полотно · ${typeName.toLowerCase()} · ${s} м²`, value: s * rate },
+      { label: `Светильники · ${l} шт`, value: l * PRICE_LIGHT },
+      { label: `Люстры · ${ch} шт`, value: ch * PRICE_CHANDELIER },
+      { label: `Обход труб · ${p} шт`, value: p * PRICE_PIPE },
+      { label: `Дополнительные углы · ${c} шт`, value: c * PRICE_CORNER },
+    ];
+
+    let raw = rows.reduce((sum, row) => sum + row.value, 0);
+    if (demolition.checked) {
+      raw += s * PRICE_DEMOLITION;
+      rows.push({ label: `Демонтаж · ${s} м²`, value: s * PRICE_DEMOLITION });
+    }
+
+    const total = Math.max(MIN_ORDER, Math.round(raw / 10) * 10);
+    if (total > raw) rows.push({ label: "До минимального заказа", value: total - raw });
 
     areaOut.textContent = `${s} м²`;
     lightsOut.textContent = `${l} шт`;
+    chandeliersOut.textContent = `${ch} шт`;
+    pipesOut.textContent = `${p} шт`;
+    cornersOut.textContent = `${c} шт`;
     totalOut.textContent = money(total);
 
-    setFill(area);
-    setFill(lights);
+    if (breakdown) {
+      breakdown.innerHTML = rows
+        .filter((row) => row.value > 0)
+        .map(
+          (row) =>
+            `<div><span>${row.label}</span><strong>${money(row.value)}</strong></div>`
+        )
+        .join("");
+    }
+
+    calcState = {
+      typeName,
+      area: s,
+      lights: l,
+      chandeliers: ch,
+      pipes: p,
+      corners: c,
+      demolition: demolition.checked,
+      total,
+    };
+
+    [area, lights, chandeliers, pipes, corners].forEach(setFill);
   };
 
-  if (area && lights && totalOut) {
-    [area, lights, demolition, ...typeChips].forEach((el) =>
+  if (
+    area && lights && chandeliers && pipes && corners &&
+    totalOut && breakdown && demolition
+  ) {
+    [area, lights, chandeliers, pipes, corners, demolition, ...typeChips].forEach((el) =>
       el.addEventListener("input", calcTotal)
     );
     calcTotal();
@@ -212,6 +269,47 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toastEl.classList.remove("is-visible"), 3200);
   };
+
+  /* ---------------------------------------------------------
+     Calculator → contact form
+     --------------------------------------------------------- */
+  const calcSend = $("#calcSend");
+  if (calcSend) {
+    calcSend.addEventListener("click", () => {
+      if (!calcState) return;
+
+      const summary = [
+        "Расчёт с сайта:",
+        `Тип: ${calcState.typeName}`,
+        `Площадь: ${calcState.area} м²`,
+        `Светильники: ${calcState.lights} шт`,
+        `Люстры: ${calcState.chandeliers} шт`,
+        `Обход труб: ${calcState.pipes} шт`,
+        `Дополнительные углы: ${calcState.corners} шт`,
+        `Демонтаж: ${calcState.demolition ? "да" : "нет"}`,
+        `Ориентировочная стоимость: ${totalOut.textContent}`,
+        "Точная смета — после замера.",
+      ].join("\n");
+
+      const contactForm = $('form[data-form="contact"]');
+      if (contactForm) {
+        const comment = $('textarea[name="comment"]', contactForm);
+        if (comment) {
+          comment.value = summary;
+          comment.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+        contactForm.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => {
+          $('input[name="name"]', contactForm)?.focus({ preventScroll: true });
+        }, 500);
+        showToast("Расчёт перенесён в форму заявки");
+        return;
+      }
+
+      const waUrl = `https://wa.me/${config.whatsapp || "79919690999"}?text=${encodeURIComponent(summary)}`;
+      window.open(waUrl, "_blank");
+    });
+  }
 
   /* ---------------------------------------------------------
      Forms

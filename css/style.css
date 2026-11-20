@@ -771,6 +771,37 @@ h3 {
   gap: 24px;
 }
 .calc__row { display: grid; gap: 12px; }
+.calc__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 22px;
+}
+.calc__breakdown {
+  display: grid;
+  gap: 7px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(15, 17, 21, .12);
+}
+.calc__breakdown div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #5e626b;
+}
+.calc__breakdown strong {
+  color: var(--ink);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.calc__note {
+  margin-top: -8px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
 .field {
   display: grid;
   gap: 7px;
@@ -1637,6 +1668,7 @@ section[id], #top { scroll-margin-top: 88px; }
   .work, .work--a, .work--b { grid-column: span 1; min-height: 220px; }
   .calc__total { flex-direction: column; align-items: stretch; }
   .calc__total .btn { width: 100%; }
+  .calc__grid { grid-template-columns: 1fr; }
   .contact__list { grid-template-columns: 1fr; gap: 20px; }
   .contact__map { height: 260px; }
   .price-list__items { grid-template-columns: 1fr; }
