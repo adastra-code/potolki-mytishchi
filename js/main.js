@@ -6,6 +6,41 @@
 
   const config = window.SITE_CONFIG || {};
   const leadsEndpoint = String(config.leadsEndpoint || "").trim();
+  const metrikaId = String(config.metrikaId || "").trim();
+
+  const reachGoal = (goal) => {
+    if (metrikaId && typeof window.ym === "function") {
+      window.ym(metrikaId, "reachGoal", goal);
+    }
+  };
+
+  if (metrikaId) {
+    window.ym =
+      window.ym ||
+      function () {
+        (window.ym.a = window.ym.a || []).push(arguments);
+      };
+    window.ym.l = Date.now();
+    window.ym(metrikaId, "init", {
+      clickmap: true,
+      trackLinks: true,
+      accurateTrackBounce: true,
+      webvisor: true,
+    });
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://mc.yandex.ru/metrika/tag.js";
+    document.head.appendChild(script);
+
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest?.("a[href]");
+      if (!link) return;
+      const href = link.getAttribute("href") || "";
+      if (href.startsWith("tel:")) reachGoal("phone_click");
+      if (href.includes("wa.me")) reachGoal("whatsapp_click");
+    });
+  }
 
   /* ---------------------------------------------------------
      Header: shadow after scroll
@@ -303,6 +338,7 @@
           $('input[name="name"]', contactForm)?.focus({ preventScroll: true });
         }, 500);
         showToast("Расчёт перенесён в форму заявки");
+        reachGoal("calculator_send");
         return;
       }
 
@@ -469,6 +505,7 @@
 
           showSuccess("Заявка отправлена! Свяжемся с вами в течение 15 минут.");
           showToast("Заявка отправлена. Перезвоним в течение 15 минут!");
+          reachGoal("form_submit");
           resetForm();
         } catch (error) {
           showToast(`Не удалось отправить. Позвоните ${config.phone || "+7 (991) 969-09-99"}.`);
@@ -485,6 +522,7 @@
 
       showSuccess("Открыли WhatsApp с готовым текстом. Нажмите «Отправить» в чате — заявка попадёт к нам.", waUrl);
       showToast("Осталось отправить сообщение в WhatsApp");
+      reachGoal("form_whatsapp");
       resetForm();
       button.disabled = false;
       button.textContent = original;

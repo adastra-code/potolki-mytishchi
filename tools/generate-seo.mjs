@@ -1,9 +1,9 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { allPages, services, rooms, cities } from "./seo-data.mjs";
+import { allPages, services, rooms, cities, trustPages, reviewsData } from "./seo-data.mjs";
 
 const root = process.cwd();
 const SITE = "https://adastra-code.github.io/potolki-mytishchi";
-const V = "20261121d";
+const V = "20261121g";
 
 const nav = `
       <nav class="nav" id="nav" aria-label="Основная навигация">
@@ -64,7 +64,9 @@ const footer = `
         <a href="index.html#calculator">Калькулятор</a>
         <a href="gallery.html">Работы</a>
         <a href="cases.html">Кейсы</a>
-        <a href="index.html#reviews">Отзывы</a>
+        <a href="o-kompanii.html">О компании</a>
+        <a href="garantii.html">Гарантии</a>
+        <a href="otzyvy.html">Отзывы</a>
         <a href="index.html#contacts">Контакты</a>
       </nav>
       <div class="footer__contacts">
@@ -360,6 +362,7 @@ ${pageSchema(page)}
     </section>
   </main>
 ${footer}${mobileBar}
+  <script src="js/config.js?v=${V}"></script>
   <script src="js/main.js?v=${V}"></script>
 </body>
 </html>
@@ -631,6 +634,330 @@ ${schema}
     </section>
   </main>
 ${footer}${mobileBar}
+  <script src="js/config.js?v=${V}"></script>
+  <script src="js/main.js?v=${V}"></script>
+</body>
+</html>
+`;
+};
+
+const renderTrust = (page) => {
+  const crumbs = [
+    { "@type": "ListItem", position: 1, name: "Главная", item: `${SITE}/` },
+    { "@type": "ListItem", position: 2, name: page.short, item: `${SITE}/${page.slug}.html` },
+  ];
+
+  const schema = JSON.stringify(
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": page.slug === "o-kompanii" ? "AboutPage" : "WebPage",
+        name: page.h1,
+        description: page.description,
+        url: `${SITE}/${page.slug}.html`,
+      },
+      ...(page.faq?.length
+        ? [
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: page.faq.map((item) => ({
+                "@type": "Question",
+                name: item.q,
+                acceptedAnswer: { "@type": "Answer", text: item.a },
+              })),
+            },
+          ]
+        : []),
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: crumbs,
+      },
+    ],
+    null,
+    2
+  );
+
+  const sections = page.sections
+    .map(
+      (section) => `
+        <h2>${esc(section.h2)}</h2>
+        ${(section.paragraphs || []).map((text) => `<p>${esc(text)}</p>`).join("")}
+        ${
+          section.list
+            ? `<ul class="seo-list">${section.list.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>`
+            : ""
+        }
+      `
+    )
+    .join("");
+
+  const faq = (page.faq || [])
+    .map(
+      (item) => `
+            <details class="seo-faq__item">
+              <summary>${esc(item.q)}</summary>
+              <p>${esc(item.a)}</p>
+            </details>`
+    )
+    .join("");
+
+  const relatedCards = page.related
+    .map((slug) => {
+      const item =
+        allPages.find((x) => x.slug === slug) ||
+        cities.find((x) => x.slug === slug) ||
+        trustPages.find((x) => x.slug === slug);
+      if (!item) return "";
+      const image = item.cardImage || item.photos?.[0]?.src || "assets/img/work-living.jpg";
+      const title = item.cardTitle || item.h1;
+      const text = item.cardText || item.lead || "";
+      return `
+          <a class="seo-card" href="${item.slug}.html">
+            <img src="${image}" alt="${esc(title)}" loading="lazy" />
+            <div class="seo-card__body">
+              <h3>${esc(title)}</h3>
+              <p>${esc(text)}</p>
+              <span>Подробнее →</span>
+            </div>
+          </a>`;
+    })
+    .join("");
+
+  return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${esc(page.title)}</title>
+  <meta name="description" content="${esc(page.description)}" />
+  <link rel="canonical" href="${SITE}/${page.slug}.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="${esc(page.title)}" />
+  <meta property="og:description" content="${esc(page.description)}" />
+  <meta property="og:url" content="${SITE}/${page.slug}.html" />
+  <meta property="og:image" content="${SITE}/assets/img/work-living.jpg" />
+  <meta property="og:site_name" content="Потолки Мытищи" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f1115" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1115'/%3E%3Cpath d='M14 40h36M20 31h24M26 22h12' stroke='%23c8a165' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=${V}" />
+  <link rel="stylesheet" href="css/seo.css?v=${V}" />
+  <script type="application/ld+json">
+${schema}
+  </script>
+</head>
+<body class="seo-page">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>${header}
+
+  <main id="main">
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Хлебные крошки">
+        <a href="index.html">Главная</a><span>/</span><span>${esc(page.short)}</span>
+      </nav>
+    </div>
+
+    <section class="seo-hero">
+      <div class="container">
+        <p class="eyebrow">${esc(page.eyebrow)}</p>
+        <h1>${esc(page.h1)}</h1>
+        <p class="seo-hero__lead">${esc(page.lead)}</p>
+        <div class="seo-meta">
+          <span>4,9 на Яндекс.Картах</span>
+          <span>25 отзывов</span>
+          <span>69 фото работ</span>
+          <span>Круглосуточно</span>
+        </div>
+        <div class="seo-hero__cta">
+          <a class="btn btn--solid btn--lg" href="index.html#contacts">Записаться на замер</a>
+          <a class="btn btn--ghost btn--lg" href="tel:+79919690999">+7 (991) 969-09-99</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="container seo-layout">
+      <article class="seo-article">
+        ${sections}
+        ${faq ? `<h2>Частые вопросы</h2><div class="seo-faq">${faq}</div>` : ""}
+        <div class="seo-article-cta">
+          <h2>Есть вопросы?</h2>
+          <p>Позвоните или оставьте заявку — ответим и согласуем удобное время.</p>
+          <div>
+            <a class="btn btn--solid" href="index.html#contacts">Оставить заявку</a>
+            <a class="btn btn--ghost" href="tel:+79919690999">+7 (991) 969-09-99</a>
+          </div>
+        </div>
+      </article>
+
+      <aside class="seo-aside">
+        <div class="seo-cta">
+          <p class="eyebrow">Бесплатный замер</p>
+          <h2>Рассчитать потолок</h2>
+          <p>Привезём образцы, замерим комнату и зафиксируем смету в договоре.</p>
+          <a class="btn btn--solid" href="index.html#calculator">Открыть калькулятор</a>
+          <a class="seo-cta__phone" href="tel:+79919690999">+7 (991) 969-09-99</a>
+        </div>
+        <div class="seo-links">
+          <h3>Полезно</h3>
+          <a href="o-kompanii.html">О компании</a>
+          <a href="garantii.html">Гарантии</a>
+          <a href="otzyvy.html">Отзывы</a>
+          <a href="uslugi.html">Услуги и цены</a>
+        </div>
+      </aside>
+    </div>
+
+    <section class="seo-related">
+      <div class="container">
+        <h2>Смотрите также</h2>
+        <div class="seo-related-grid">${relatedCards}</div>
+      </div>
+    </section>
+  </main>
+${footer}${mobileBar}
+  <script src="js/config.js?v=${V}"></script>
+  <script src="js/main.js?v=${V}"></script>
+</body>
+</html>
+`;
+};
+
+const renderReviews = () => {
+  const schema = JSON.stringify(
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        name: "Натяжные потолки",
+        telephone: "+7-991-969-09-99",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "ул. Борисовка, 12А",
+          addressLocality: "Мытищи",
+          addressRegion: "Московская область",
+          addressCountry: "RU",
+        },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.9",
+          reviewCount: "25",
+          ratingCount: "26",
+        },
+        review: reviewsData.map((review) => ({
+          "@type": "Review",
+          author: { "@type": "Person", name: review.name },
+          datePublished: review.date,
+          reviewBody: review.text,
+          reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+        })),
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Главная", item: `${SITE}/` },
+          { "@type": "ListItem", position: 2, name: "Отзывы", item: `${SITE}/otzyvy.html` },
+        ],
+      },
+    ],
+    null,
+    2
+  );
+
+  const cards = reviewsData
+    .map(
+      (review) => `
+          <article class="trust-review">
+            <div class="trust-review__stars" aria-label="Оценка 5 из 5">★★★★★</div>
+            <blockquote>${esc(review.text)}</blockquote>
+            <footer>
+              <strong>${esc(review.name)}</strong>
+              <span>${new Date(review.date).toLocaleDateString("ru-RU", { day: "numeric", month: "long" })} · Яндекс.Карты</span>
+            </footer>
+          </article>`
+    )
+    .join("");
+
+  return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Отзывы клиентов — натяжные потолки в Мытищах</title>
+  <meta name="description" content="Отзывы клиентов о натяжных потолках в Мытищах: монтаж, свет, теневые профили. Рейтинг 4,9 из 5, 25 отзывов на Яндекс.Картах." />
+  <link rel="canonical" href="${SITE}/otzyvy.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ru_RU" />
+  <meta property="og:title" content="Отзывы клиентов — натяжные потолки в Мытищах" />
+  <meta property="og:description" content="Рейтинг 4,9 из 5, 25 отзывов клиентов. Реальные истории о монтаже натяжных потолков." />
+  <meta property="og:url" content="${SITE}/otzyvy.html" />
+  <meta property="og:image" content="${SITE}/assets/img/work-living.jpg" />
+  <meta property="og:site_name" content="Потолки Мытищи" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0f1115" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1115'/%3E%3Cpath d='M14 40h36M20 31h24M26 22h12' stroke='%23c8a165' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=${V}" />
+  <link rel="stylesheet" href="css/seo.css?v=${V}" />
+  <script type="application/ld+json">
+${schema}
+  </script>
+</head>
+<body class="seo-page">
+  <a class="skip-link" href="#main">Перейти к содержимому</a>${header}
+
+  <main id="main">
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Хлебные крошки">
+        <a href="index.html">Главная</a><span>/</span><span>Отзывы</span>
+      </nav>
+    </div>
+
+    <section class="seo-hero">
+      <div class="container">
+        <p class="eyebrow">Отзывы</p>
+        <h1>Отзывы клиентов</h1>
+        <p class="seo-hero__lead">
+          Рейтинг 4,9 из 5 на Яндекс.Картах, 25 отзывов. Ниже — часть историй
+          клиентов о замере, монтаже, свете и работе с теневых профилем.
+        </p>
+        <div class="seo-meta">
+          <span>4,9 из 5</span>
+          <span>25 отзывов</span>
+          <span>69 фото работ</span>
+          <span>Мытищи и МО</span>
+        </div>
+        <div class="seo-hero__cta">
+          <a class="btn btn--solid btn--lg" href="index.html#contacts">Записаться на замер</a>
+          <a class="btn btn--ghost btn--lg" href="gallery.html">Посмотреть работы</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-reviews-section">
+      <div class="container">
+        <div class="trust-reviews">${cards}</div>
+        <p class="trust-source">Отзывы приведены из карточки компании на Яндекс.Картах. Имена и даты сохранены.</p>
+        <div class="seo-article-cta">
+          <h2>Хотите такой же результат?</h2>
+          <p>Приедем на замер, привезём образцы и назовём точную цену.</p>
+          <div>
+            <a class="btn btn--solid" href="index.html#contacts">Оставить заявку</a>
+            <a class="btn btn--ghost" href="tel:+79919690999">+7 (991) 969-09-99</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+${footer}${mobileBar}
+  <script src="js/config.js?v=${V}"></script>
   <script src="js/main.js?v=${V}"></script>
 </body>
 </html>
@@ -786,6 +1113,7 @@ ${schema}
     </section>
   </main>
 ${footer}${mobileBar}
+  <script src="js/config.js?v=${V}"></script>
   <script src="js/main.js?v=${V}"></script>
 </body>
 </html>
@@ -800,5 +1128,11 @@ for (const city of cities) {
   await writeFile(`${root}\\${city.slug}.html`, renderCity(city), "utf8");
   console.log("wrote", `${city.slug}.html`);
 }
+for (const page of trustPages) {
+  await writeFile(`${root}\\${page.slug}.html`, renderTrust(page), "utf8");
+  console.log("wrote", `${page.slug}.html`);
+}
+await writeFile(`${root}\\otzyvy.html`, renderReviews(), "utf8");
+console.log("wrote otzyvy.html");
 await writeFile(`${root}\\uslugi.html`, renderHub(), "utf8");
 console.log("wrote uslugi.html");

@@ -89,6 +89,74 @@
   color: #6d5a36 !important;
 }
 
+.seo-list {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 18px;
+  padding: 0;
+}
+.seo-list li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #4f545d;
+}
+.seo-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brass);
+  box-shadow: 0 0 0 3px rgba(200, 161, 101, .14);
+}
+
+.seo-reviews-section { padding: 0 0 clamp(54px, 7vw, 88px); }
+.trust-reviews {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.trust-review {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: clamp(20px, 2.5vw, 28px);
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(15, 17, 21, .07);
+}
+.trust-review__stars {
+  margin-bottom: 12px;
+  color: #a5824a;
+  letter-spacing: .14em;
+  font-size: 13px;
+}
+.trust-review blockquote {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #4f545d;
+}
+.trust-review footer {
+  display: grid;
+  gap: 2px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(15, 17, 21, .08);
+}
+.trust-review footer strong { font-size: 13.5px; }
+.trust-review footer span { font-size: 11.5px; color: var(--muted); }
+.trust-source {
+  margin: 4px 0 34px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 .seo-benefits {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -395,4 +463,5 @@
   .seo-hub-grid { grid-template-columns: 1fr; }
   .seo-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .seo-geo__list { grid-template-columns: 1fr 1fr; }
+  .trust-reviews { grid-template-columns: 1fr; }
 }
