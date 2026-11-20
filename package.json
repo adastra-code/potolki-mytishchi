@@ -1,0 +1,14 @@
+{
+  "name": "potolki-mytishchi",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Лендинг компании по натяжным потолкам в Мытищах",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
