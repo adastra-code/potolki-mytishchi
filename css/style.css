@@ -698,7 +698,7 @@ h3 {
 
 /* ---------- Link arrow ---------- */
 .gallery__more,
-.reviews__more { display: flex; justify-content: center; margin-top: 30px; }
+.reviews__more { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: 30px; }
 .link-arrow {
   display: inline-flex;
   align-items: center;

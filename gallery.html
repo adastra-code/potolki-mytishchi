@@ -19,8 +19,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261120" />
-  <link rel="stylesheet" href="css/gallery.css?v=20261120" />
+  <link rel="stylesheet" href="css/style.css?v=20261120e" />
+  <link rel="stylesheet" href="css/gallery.css?v=20261120e" />
 </head>
 <body class="gallery-page">
   <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -85,6 +85,22 @@
 
     <section class="gallery-list">
       <div class="container">
+        <div class="gallery-filters" id="galleryFilters" role="group" aria-label="Фильтр работ">
+          <button class="filter is-active" type="button" data-filter="all">Все <span></span></button>
+          <button class="filter" type="button" data-filter="living">Гостиная <span></span></button>
+          <button class="filter" type="button" data-filter="kitchen">Кухня <span></span></button>
+          <button class="filter" type="button" data-filter="bath">Ванная <span></span></button>
+          <button class="filter" type="button" data-filter="bedroom">Спальня <span></span></button>
+          <button class="filter" type="button" data-filter="light">Световые линии <span></span></button>
+          <button class="filter" type="button" data-filter="shadow">Теневые <span></span></button>
+          <button class="filter" type="button" data-filter="gloss">Глянец <span></span></button>
+          <button class="filter" type="button" data-filter="matte">Матовые <span></span></button>
+          <button class="filter" type="button" data-filter="track">Треки <span></span></button>
+          <button class="filter" type="button" data-filter="multi">Многоуровневые <span></span></button>
+        </div>
+        <p class="gallery-result" id="galleryResult"></p>
+        <div class="gallery-empty" id="galleryEmpty" hidden>По этому фильтру пока нет фотографий. Выберите другой.</div>
+
         <div class="photo-grid" id="photoGrid">
                     <a class="shot" href="assets/gallery/full/01.jpg" data-full="assets/gallery/full/01.jpg" aria-label="Открыть фото 1 из 69">
             <img src="assets/gallery/thumb/01.jpg" alt="Натяжные потолки в Мытищах — фото 1" width="390" height="520" loading="eager" decoding="async" />
@@ -328,6 +344,7 @@
         <a href="index.html#services">Услуги</a>
         <a href="index.html#calculator">Калькулятор</a>
         <a href="gallery.html">Работы</a>
+        <a href="cases.html">Кейсы</a>
         <a href="index.html#process">Этапы</a>
         <a href="index.html#reviews">Отзывы</a>
       </nav>
@@ -380,11 +397,13 @@
         <strong id="lightboxCounter">1 / 69</strong>
         <span id="lightboxTitle">Натяжные потолки, Мытищи</span>
       </figcaption>
+      <a class="lightbox__want" id="lightboxCta" href="index.html#contacts">Хочу такой же</a>
     </figure>
     <button class="lightbox__arrow lightbox__arrow--next" type="button" aria-label="Следующее фото">→</button>
   </div>
 
-  <script src="js/main.js?v=20261120"></script>
-  <script src="js/gallery.js?v=20261120"></script>
+  <script src="js/main.js?v=20261120e"></script>
+  <script src="js/gallery.js?v=20261120e"></script>
+  <script src="js/gallery-filters.js?v=20261120e"></script>
 </body>
 </html>

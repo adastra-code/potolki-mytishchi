@@ -5,19 +5,27 @@
   const box = document.getElementById("lightbox");
   if (!grid || !box) return;
 
-  const shots = Array.from(grid.querySelectorAll(".shot"));
+  const allShots = Array.from(grid.querySelectorAll(".shot"));
+  let shots = allShots;
+  let total = shots.length;
   const image = document.getElementById("lightboxImage");
   const counter = document.getElementById("lightboxCounter");
   const title = document.getElementById("lightboxTitle");
+  const cta = document.getElementById("lightboxCta");
   const closeBtn = box.querySelector(".lightbox__close");
   const prevBtn = box.querySelector(".lightbox__arrow--prev");
   const nextBtn = box.querySelector(".lightbox__arrow--next");
-  const total = shots.length;
 
   let current = 0;
   let lastTrigger = null;
 
+  const refresh = () => {
+    shots = allShots.filter((shot) => !shot.hidden);
+    total = shots.length;
+  };
+
   const preload = (i) => {
+    if (!total) return;
     const shot = shots[(i + total) % total];
     if (!shot) return;
     const img = new Image();
@@ -25,7 +33,8 @@
   };
 
   const render = (i) => {
-    current = (i + total) % total;
+    if (!total) return;
+    current = ((i % total) + total) % total;
     const shot = shots[current];
     const thumb = shot.querySelector("img");
 
@@ -35,13 +44,20 @@
     if (title) title.textContent = shot.dataset.title || "Натяжные потолки, Мытищи";
     box.setAttribute("aria-label", `Просмотр фото ${current + 1} из ${total}`);
 
+    if (cta) {
+      const number = (shot.getAttribute("href") || "").match(/(\d+)\.jpg/)?.[1];
+      cta.href = `index.html?photo=${Number(number) || current + 1}#contacts`;
+    }
+
     preload(current + 1);
     preload(current - 1);
   };
 
-  const open = (i, trigger) => {
+  const open = (trigger) => {
+    refresh();
+    if (!total) return;
     lastTrigger = trigger || null;
-    render(i);
+    render(Math.max(0, shots.indexOf(trigger)));
     box.hidden = false;
     box.setAttribute("aria-hidden", "false");
     document.body.classList.add("is-locked");
@@ -56,10 +72,10 @@
     if (lastTrigger) lastTrigger.focus({ preventScroll: true });
   };
 
-  shots.forEach((shot, i) => {
+  allShots.forEach((shot) => {
     shot.addEventListener("click", (event) => {
       event.preventDefault();
-      open(i, shot);
+      open(shot);
     });
   });
 

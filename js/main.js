@@ -312,6 +312,25 @@
   }
 
   /* ---------------------------------------------------------
+     Prefill from gallery / cases
+     --------------------------------------------------------- */
+  const prefillParams = new URLSearchParams(location.search);
+  const photoNumber = (prefillParams.get("photo") || "").replace(/\D/g, "").slice(0, 3);
+  const caseNumber = (prefillParams.get("case") || "").replace(/\D/g, "").slice(0, 2);
+  const contactFormForPrefill = $('form[data-form="contact"]');
+
+  if (contactFormForPrefill) {
+    const comment = $('textarea[name="comment"]', contactFormForPrefill);
+    if (comment && !comment.value) {
+      if (photoNumber) {
+        comment.value = `Хочу такой же потолок, как на фото №${photoNumber} в галерее.`;
+      } else if (caseNumber) {
+        comment.value = `Интересует кейс №${caseNumber}. Хочу такой же потолок.`;
+      }
+    }
+  }
+
+  /* ---------------------------------------------------------
      Forms
      --------------------------------------------------------- */
   const showError = (field, message) => {
