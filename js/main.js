@@ -108,108 +108,219 @@
   /* ---------------------------------------------------------
      Calculator
      --------------------------------------------------------- */
-  const area = $("#area");
-  const lights = $("#lights");
-  const chandeliers = $("#chandeliers");
-  const pipes = $("#pipes");
-  const corners = $("#corners");
-  const areaOut = $("#areaOut");
-  const lightsOut = $("#lightsOut");
-  const chandeliersOut = $("#chandeliersOut");
-  const pipesOut = $("#pipesOut");
-  const cornersOut = $("#cornersOut");
-  const totalOut = $("#totalOut");
-  const breakdown = $("#breakdown");
-  const demolition = $("#install");
-  const typeChipsRoot = $("#typeChips");
-  const typeChips = typeChipsRoot ? $$('input[name="type"]', typeChipsRoot) : [];
-
+  /* ---------------------------------------------------------
+     Calculator v3: несколько комнат
+     --------------------------------------------------------- */
+  const TYPE_LABELS = {
+    matte: "Матовый",
+    gloss: "Глянцевый",
+    satin: "Сатиновый",
+    light: "Световые линии",
+    shadow: "Теневой",
+    multi: "Многоуровневый",
+  };
+  const TYPE_RATES = {
+    matte: 890,
+    gloss: 990,
+    satin: 950,
+    light: 1450,
+    shadow: 1590,
+    multi: 1900,
+  };
   const PRICE_LIGHT = 450;
   const PRICE_CHANDELIER = 650;
   const PRICE_PIPE = 600;
   const PRICE_CORNER = 300;
   const PRICE_DEMOLITION = 180;
   const MIN_ORDER = 9900;
+  const MAX_ROOMS = 6;
 
   let calcState = null;
 
-  const money = (n) => `${new Intl.NumberFormat("ru-RU").format(n)} ₽`;
+  const calcRooms = $("#calcRooms");
+  const addRoomBtn = $("#addRoom");
+  const totalOut = $("#totalOut");
+  const breakdown = $("#breakdown");
 
-  const setFill = (input) => {
-    const min = Number(input.min);
-    const max = Number(input.max);
-    const value = Number(input.value);
-    const p = ((value - min) / (max - min)) * 100;
-    input.style.setProperty("--p", `${p}%`);
-  };
+  if (calcRooms && addRoomBtn && totalOut && breakdown) {
+    let roomSeq = 0;
 
-  const calcTotal = () => {
-    const s = Number(area.value);
-    const l = Number(lights.value);
-    const ch = Number(chandeliers.value);
-    const p = Number(pipes.value);
-    const c = Number(corners.value);
+    const money = (n) => `${new Intl.NumberFormat("ru-RU").format(n)} ₽`;
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, Number(value) || 0));
+    const typeOptions = Object.entries(TYPE_LABELS)
+      .map(([value, label]) => `<option value="${value}">${label}</option>`)
+      .join("");
 
-    const selected = typeChips.find((chip) => chip.checked);
-    const rate = Number(selected?.value || 890);
-    const typeName = selected?.parentElement.querySelector("span")?.textContent.trim() || "Матовый";
-
-    const rows = [
-      { label: `Полотно · ${typeName.toLowerCase()} · ${s} м²`, value: s * rate },
-      { label: `Светильники · ${l} шт`, value: l * PRICE_LIGHT },
-      { label: `Люстры · ${ch} шт`, value: ch * PRICE_CHANDELIER },
-      { label: `Обход труб · ${p} шт`, value: p * PRICE_PIPE },
-      { label: `Дополнительные углы · ${c} шт`, value: c * PRICE_CORNER },
-    ];
-
-    let raw = rows.reduce((sum, row) => sum + row.value, 0);
-    if (demolition.checked) {
-      raw += s * PRICE_DEMOLITION;
-      rows.push({ label: `Демонтаж · ${s} м²`, value: s * PRICE_DEMOLITION });
-    }
-
-    const total = Math.max(MIN_ORDER, Math.round(raw / 10) * 10);
-    if (total > raw) rows.push({ label: "До минимального заказа", value: total - raw });
-
-    areaOut.textContent = `${s} м²`;
-    lightsOut.textContent = `${l} шт`;
-    chandeliersOut.textContent = `${ch} шт`;
-    pipesOut.textContent = `${p} шт`;
-    cornersOut.textContent = `${c} шт`;
-    totalOut.textContent = money(total);
-
-    if (breakdown) {
-      breakdown.innerHTML = rows
-        .filter((row) => row.value > 0)
-        .map(
-          (row) =>
-            `<div><span>${row.label}</span><strong>${money(row.value)}</strong></div>`
-        )
-        .join("");
-    }
-
-    calcState = {
-      typeName,
-      area: s,
-      lights: l,
-      chandeliers: ch,
-      pipes: p,
-      corners: c,
-      demolition: demolition.checked,
-      total,
+    const renumber = () => {
+      const rooms = Array.from(calcRooms.querySelectorAll(".calc-room"));
+      rooms.forEach((room, index) => {
+        const number = room.querySelector(".room-number");
+        if (number) number.textContent = String(index + 1);
+        const remove = room.querySelector(".calc-room__remove");
+        if (remove) {
+          remove.hidden = rooms.length === 1;
+          remove.setAttribute("aria-label", `Удалить комнату ${index + 1}`);
+        }
+      });
+      addRoomBtn.disabled = rooms.length >= MAX_ROOMS;
     };
 
-    [area, lights, chandeliers, pipes, corners].forEach(setFill);
-  };
+    const readRooms = () =>
+      Array.from(calcRooms.querySelectorAll(".calc-room")).map((room) => {
+        const value = (selector, min, max) =>
+          clamp(room.querySelector(selector)?.value, min, max);
+        return {
+          type: room.querySelector(".room-type")?.value || "matte",
+          area: value(".room-area", 3, 150),
+          lights: value(".room-lights", 0, 24),
+          chandeliers: value(".room-chandeliers", 0, 4),
+          pipes: value(".room-pipes", 0, 4),
+          corners: value(".room-corners", 0, 8),
+          demolition: Boolean(room.querySelector(".room-demolition")?.checked),
+        };
+      });
 
-  if (
-    area && lights && chandeliers && pipes && corners &&
-    totalOut && breakdown && demolition
-  ) {
-    [area, lights, chandeliers, pipes, corners, demolition, ...typeChips].forEach((el) =>
-      el.addEventListener("input", calcTotal)
-    );
-    calcTotal();
+    const calcTotal = () => {
+      const rooms = readRooms();
+      let raw = 0;
+
+      rooms.forEach((room) => {
+        room.cost =
+          room.area * TYPE_RATES[room.type] +
+          room.lights * PRICE_LIGHT +
+          room.chandeliers * PRICE_CHANDELIER +
+          room.pipes * PRICE_PIPE +
+          room.corners * PRICE_CORNER +
+          (room.demolition ? room.area * PRICE_DEMOLITION : 0);
+        raw += room.cost;
+      });
+
+      const discount = rooms.length >= 2 ? Math.round(raw * 0.1) : 0;
+      const afterDiscount = raw - discount;
+      const total = Math.max(MIN_ORDER, Math.round(afterDiscount / 10) * 10);
+      const minExtra = afterDiscount < MIN_ORDER ? Math.max(0, total - afterDiscount) : 0;
+
+      Array.from(calcRooms.querySelectorAll(".calc-room")).forEach((roomEl, index) => {
+        const subtotal = roomEl.querySelector(".room-subtotal");
+        if (subtotal) subtotal.textContent = money(rooms[index].cost);
+      });
+
+      const rows = rooms.map((room, index) => ({
+        label: `Комната ${index + 1} · ${TYPE_LABELS[room.type].toLowerCase()} · ${room.area} м²`,
+        value: room.cost,
+      }));
+
+      if (discount > 0) rows.push({ label: "Скидка 10% за 2+ комнаты", value: -discount });
+      if (minExtra > 0) rows.push({ label: "До минимального заказа", value: minExtra });
+
+      breakdown.innerHTML = rows
+        .map((row) => {
+          const cls = row.value < 0 ? ' class="calc__discount"' : "";
+          return `<div${cls}><span>${row.label}</span><strong>${money(row.value)}</strong></div>`;
+        })
+        .join("");
+
+      totalOut.textContent = money(total);
+      calcState = { rooms, total, discount };
+    };
+
+    const createRoom = (defaults = {}) => {
+      if (calcRooms.children.length >= MAX_ROOMS) return null;
+
+      const id = ++roomSeq;
+      const room = document.createElement("div");
+      room.className = "calc-room";
+      room.dataset.id = String(id);
+      room.innerHTML = `
+        <div class="calc-room__head">
+          <span class="calc-room__title">Комната <span class="room-number"></span></span>
+          <button class="calc-room__remove" type="button" aria-label="Удалить комнату">×</button>
+        </div>
+        <div class="calc-room__grid">
+          <label class="field field--compact calc-room__type">
+            <span>Тип потолка</span>
+            <select class="room-type">${typeOptions}</select>
+          </label>
+          <label class="field field--compact">
+            <span>Площадь, м²</span>
+            <input class="room-area" type="number" inputmode="decimal" min="3" max="150" step="1" />
+          </label>
+          <label class="field field--compact">
+            <span>Светильники, шт</span>
+            <input class="room-lights" type="number" inputmode="numeric" min="0" max="24" step="1" />
+          </label>
+          <label class="field field--compact">
+            <span>Люстры, шт</span>
+            <input class="room-chandeliers" type="number" inputmode="numeric" min="0" max="4" step="1" />
+          </label>
+          <label class="field field--compact">
+            <span>Обход труб, шт</span>
+            <input class="room-pipes" type="number" inputmode="numeric" min="0" max="4" step="1" />
+          </label>
+          <label class="field field--compact">
+            <span>Доп. углы, шт</span>
+            <input class="room-corners" type="number" inputmode="numeric" min="0" max="8" step="1" />
+          </label>
+        </div>
+        <label class="switch calc-room__demolition">
+          <input class="room-demolition" type="checkbox" />
+          <span class="switch__box" aria-hidden="true"></span>
+          <span>Демонтаж старого потолка</span>
+        </label>
+        <div class="calc-room__subtotal">
+          <span>По комнате</span>
+          <strong class="room-subtotal">0 ₽</strong>
+        </div>`;
+
+      calcRooms.appendChild(room);
+
+      const values = {
+        type: defaults.type || "matte",
+        area: defaults.area ?? 18,
+        lights: defaults.lights ?? 4,
+        chandeliers: defaults.chandeliers ?? 0,
+        pipes: defaults.pipes ?? 0,
+        corners: defaults.corners ?? 0,
+        demolition: Boolean(defaults.demolition),
+      };
+
+      room.querySelector(".room-type").value = values.type;
+      room.querySelector(".room-area").value = values.area;
+      room.querySelector(".room-lights").value = values.lights;
+      room.querySelector(".room-chandeliers").value = values.chandeliers;
+      room.querySelector(".room-pipes").value = values.pipes;
+      room.querySelector(".room-corners").value = values.corners;
+      room.querySelector(".room-demolition").checked = values.demolition;
+
+      renumber();
+      calcTotal();
+      return room;
+    };
+
+    calcRooms.addEventListener("input", calcTotal);
+    calcRooms.addEventListener("change", calcTotal);
+    calcRooms.addEventListener("click", (event) => {
+      const remove = event.target.closest(".calc-room__remove");
+      if (!remove) return;
+      if (calcRooms.children.length === 1) return;
+      remove.closest(".calc-room").remove();
+      renumber();
+      calcTotal();
+    });
+
+    addRoomBtn.addEventListener("click", () => {
+      createRoom({ area: 18, type: "matte", lights: 4 });
+    });
+
+    createRoom({
+      area: 24,
+      type: "matte",
+      lights: 6,
+      chandeliers: 0,
+      pipes: 0,
+      corners: 0,
+      demolition: true,
+    });
   }
 
   /* ---------------------------------------------------------
@@ -313,18 +424,29 @@
     calcSend.addEventListener("click", () => {
       if (!calcState) return;
 
+      const fmt = (n) => `${new Intl.NumberFormat("ru-RU").format(n)} ₽`;
+      const roomLines = calcState.rooms.map((room, index) => {
+        const details = [
+          `${room.area} м²`,
+          TYPE_LABELS[room.type].toLowerCase(),
+          `светильники ${room.lights}`,
+          `люстры ${room.chandeliers}`,
+          `трубы ${room.pipes}`,
+          `углы ${room.corners}`,
+          `демонтаж ${room.demolition ? "да" : "нет"}`,
+        ].join(", ");
+        return `Комната ${index + 1}: ${details} — ${fmt(room.cost)}`;
+      });
+
       const summary = [
         "Расчёт с сайта:",
-        `Тип: ${calcState.typeName}`,
-        `Площадь: ${calcState.area} м²`,
-        `Светильники: ${calcState.lights} шт`,
-        `Люстры: ${calcState.chandeliers} шт`,
-        `Обход труб: ${calcState.pipes} шт`,
-        `Дополнительные углы: ${calcState.corners} шт`,
-        `Демонтаж: ${calcState.demolition ? "да" : "нет"}`,
-        `Ориентировочная стоимость: ${totalOut.textContent}`,
+        ...roomLines,
+        calcState.discount > 0 ? `Скидка 10% за 2+ комнаты: −${fmt(calcState.discount)}` : "",
+        `Итого: ${fmt(calcState.total)}`,
         "Точная смета — после замера.",
-      ].join("\n");
+      ]
+        .filter(Boolean)
+        .join("\n");
 
       const contactForm = $('form[data-form="contact"]');
       if (contactForm) {

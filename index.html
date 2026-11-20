@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20261120g" />
+  <link rel="stylesheet" href="css/style.css?v=20261120i" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -262,72 +262,35 @@
           <p class="eyebrow">Онлайн-калькулятор</p>
           <h2>Узнайте цену<span class="accent"> за минуту</span></h2>
           <p>
-            Передвиньте ползунки — покажем ориентировочную стоимость: полотно,
-            монтаж, светильники, люстры, обход труб и демонтаж.
+            Добавьте комнаты, укажите площадь, свет и демонтаж — покажем
+            ориентировочную стоимость по каждой комнате и общий итог.
           </p>
           <ul class="check-list">
             <li>Замер и консультация — бесплатно</li>
             <li>Смета фиксируется в договоре</li>
             <li>Оплата после приёмки работ</li>
           </ul>
-          <p class="calc__hint">Точная цена — после замера. Скидка 10% при заказе двух комнат и более.</p>
+          <p class="calc__hint">Считайте до 6 комнат. Скидка 10% при заказе двух комнат и более. Точная цена — после замера.</p>
         </div>
 
         <form class="calc__card" id="calcForm">
-          <div class="calc__row">
-            <label class="field field--range">
-              <span>Площадь потолка <output id="areaOut">24 м²</output></span>
-              <input type="range" id="area" min="5" max="120" step="1" value="24" />
-            </label>
-          </div>
+          <div class="calc__rooms" id="calcRooms"></div>
 
-          <fieldset class="calc__fieldset">
-            <legend>Тип потолка</legend>
-            <div class="chips" id="typeChips">
-              <label class="chip"><input type="radio" name="type" value="890" checked /><span>Матовый</span></label>
-              <label class="chip"><input type="radio" name="type" value="990" /><span>Глянцевый</span></label>
-              <label class="chip"><input type="radio" name="type" value="950" /><span>Сатиновый</span></label>
-              <label class="chip"><input type="radio" name="type" value="1450" /><span>Световые линии</span></label>
-              <label class="chip"><input type="radio" name="type" value="1590" /><span>Теневой</span></label>
-              <label class="chip"><input type="radio" name="type" value="1900" /><span>Многоуровневый</span></label>
-            </div>
-          </fieldset>
-
-          <div class="calc__grid">
-            <label class="field field--range">
-              <span>Точечные светильники <output id="lightsOut">6 шт</output></span>
-              <input type="range" id="lights" min="0" max="24" step="1" value="6" />
-            </label>
-            <label class="field field--range">
-              <span>Люстры <output id="chandeliersOut">0 шт</output></span>
-              <input type="range" id="chandeliers" min="0" max="4" step="1" value="0" />
-            </label>
-            <label class="field field--range">
-              <span>Обход труб <output id="pipesOut">0 шт</output></span>
-              <input type="range" id="pipes" min="0" max="4" step="1" value="0" />
-            </label>
-            <label class="field field--range">
-              <span>Дополнительные углы <output id="cornersOut">0 шт</output></span>
-              <input type="range" id="corners" min="0" max="8" step="1" value="0" />
-            </label>
-          </div>
-
-          <label class="switch">
-            <input type="checkbox" id="install" checked />
-            <span class="switch__box" aria-hidden="true"></span>
-            <span>Демонтаж старого потолка</span>
-          </label>
+          <button class="calc__add" type="button" id="addRoom">
+            <span aria-hidden="true">+</span> Добавить комнату
+          </button>
 
           <div class="calc__breakdown" id="breakdown"></div>
 
           <div class="calc__total">
             <div>
               <span>Ориентировочная стоимость</span>
-              <strong id="totalOut">28 380 ₽</strong>
+              <strong id="totalOut">—</strong>
             </div>
             <button class="btn btn--solid" type="button" id="calcSend">Отправить расчёт</button>
           </div>
           <p class="calc__note">Скрытые карнизы и сложные конструкции рассчитываются после замера.</p>
+          <noscript><p class="calc__note">Для расчёта включите JavaScript.</p></noscript>
         </form>
       </div>
     </section>
@@ -733,7 +696,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="js/config.js?v=20261120g"></script>
-  <script src="js/main.js?v=20261120g"></script>
+  <script src="js/config.js?v=20261120h"></script>
+  <script src="js/main.js?v=20261120i"></script>
 </body>
 </html>
