@@ -1,4 +1,4 @@
 User-agent: *
-Allow: /
+Disallow: /
 
-Sitemap: https://adastra-code.github.io/potolki-mytishchi/sitemap.xml
+# Сайт временно закрыт от индексации.

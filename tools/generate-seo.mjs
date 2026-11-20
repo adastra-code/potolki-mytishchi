@@ -240,6 +240,7 @@ const renderPage = (page) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>${esc(page.title)}</title>
   <meta name="description" content="${esc(page.description)}" />
   <link rel="canonical" href="${SITE}/${page.slug}.html" />
@@ -476,6 +477,7 @@ const renderCity = (page) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>${esc(page.title)}</title>
   <meta name="description" content="${esc(page.description)}" />
   <link rel="canonical" href="${SITE}/${page.slug}.html" />
@@ -691,6 +693,7 @@ const renderTrust = (page) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>${esc(page.title)}</title>
   <meta name="description" content="${esc(page.description)}" />
   <link rel="canonical" href="${SITE}/${page.slug}.html" />
@@ -852,6 +855,7 @@ const renderReviews = () => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Отзывы клиентов — натяжные потолки в Мытищах</title>
   <meta name="description" content="Отзывы клиентов о натяжных потолках в Мытищах: монтаж, свет, теневые профили. Рейтинг 4,9 из 5, 25 отзывов на Яндекс.Картах." />
   <link rel="canonical" href="${SITE}/otzyvy.html" />
@@ -979,6 +983,7 @@ const renderHub = () => {  const serviceCards = services
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Услуги — натяжные потолки в Мытищах | Потолки Мытищи</title>
   <meta name="description" content="Виды натяжных потолков и решения по комнатам: теневые, световые линии, парящие, многоуровневые. Описание, фото и монтаж в Мытищах и Московской области." />
   <link rel="canonical" href="${SITE}/uslugi.html" />
