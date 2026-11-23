@@ -8,7 +8,9 @@
  * whatsapp — номер в международном формате без +, пробелов и скобок.
  */
 window.SITE_CONFIG = {
-  leadsEndpoint: "",
+  // FormSubmit: заявки приходят на почту. При первой отправке FormSubmit
+  // пришлёт письмо активации — его нужно подтвердить.
+  leadsEndpoint: "https://formsubmit.co/ajax/vsegdanavsegda@icloud.com",
   whatsapp: "79919690999",
   siteName: "Академия Натяжных Потолков",
   phone: "+7 (991) 969-09-99",

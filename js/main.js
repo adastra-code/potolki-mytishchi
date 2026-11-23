@@ -555,6 +555,13 @@
       data.page = location.href;
       data.referrer = document.referrer || "";
       data.sentAt = new Date().toISOString();
+      data._subject =
+        form.dataset.form === "booking"
+          ? `Запись на замер — ${location.pathname}`
+          : form.dataset.form === "quiz"
+            ? `Тест подбора — ${location.pathname}`
+            : `Заявка с сайта — ${location.pathname}`;
+      data._template = "table";
       return data;
     };
 
@@ -654,7 +661,10 @@
             headers: { "Content-Type": "application/json", Accept: "application/json" },
             body: JSON.stringify(data),
           });
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const result = await response.json().catch(() => null);
+          if (!response.ok || (result && String(result.success).toLowerCase() === "false")) {
+            throw new Error(result?.message || `HTTP ${response.status}`);
+          }
 
           showSuccess("Заявка отправлена! Свяжемся с вами.");
           showToast("Заявка отправлена. Перезвоним.");
