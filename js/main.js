@@ -560,7 +560,7 @@
 
     const whatsappMessage = (data) => {
       const lines = [
-        `Заявка с сайта ${config.siteName || "Потолки Мытищи"}`,
+        `Заявка с сайта ${config.siteName || "Академия Натяжных Потолков"}`,
         `Имя: ${data.name}`,
         `Телефон: ${data.phone}`,
       ];

@@ -3,7 +3,7 @@ import { allPages, services, rooms, cities, trustPages, reviewsData } from "./se
 
 const root = process.cwd();
 const SITE = "https://adastra-code.github.io/potolki-mytishchi";
-const V = "20261122l";
+const V = "20261123a";
 
 const nav = `
       <nav class="nav" id="nav" aria-label="Основная навигация">
@@ -23,14 +23,14 @@ const nav = `
 const header = `
   <header class="header" id="header">
     <div class="container header__inner">
-      <a class="logo" href="index.html" aria-label="Потолки Мытищи — на главную">
+      <a class="logo" href="index.html" aria-label="Академия Натяжных Потолков — на главную">
         <span class="logo__mark" aria-hidden="true">
           <svg viewBox="0 0 40 40" width="40" height="40">
             <rect x="1" y="1" width="38" height="38" rx="11" fill="none" stroke="currentColor" stroke-opacity=".35" />
             <path d="M10 27h20M13 21h14M16 15h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
           </svg>
         </span>
-        <span class="logo__text">ПОТОЛКИ <em>МЫТИЩИ</em></span>
+        <span class="logo__text">АКАДЕМИЯ <em>НАТЯЖНЫХ ПОТОЛКОВ</em></span>
       </a>${nav}
       <div class="header__actions">
         <a class="header__phone" href="tel:+79919690999">
@@ -49,14 +49,14 @@ const footer = `
   <footer class="footer">
     <div class="container footer__inner">
       <div class="footer__brand">
-        <a class="logo" href="index.html" aria-label="Потолки Мытищи — на главную">
+        <a class="logo" href="index.html" aria-label="Академия Натяжных Потолков — на главную">
           <span class="logo__mark" aria-hidden="true">
             <svg viewBox="0 0 40 40" width="40" height="40">
               <rect x="1" y="1" width="38" height="38" rx="11" fill="none" stroke="currentColor" stroke-opacity=".35" />
               <path d="M10 27h20M13 21h14M16 15h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
             </svg>
           </span>
-          <span class="logo__text">ПОТОЛКИ <em>МЫТИЩИ</em></span>
+          <span class="logo__text">АКАДЕМИЯ <em>НАТЯЖНЫХ ПОТОЛКОВ</em></span>
         </a>
         <p>Натяжные потолки под ключ<br />Мытищи и Московская область</p>
       </div>
@@ -81,7 +81,7 @@ const footer = `
       </div>
     </div>
     <div class="container footer__bottom">
-      <p>© <span id="year">2026</span> Натяжные потолки. Не является публичной офертой.</p>
+      <p>© <span id="year">2026</span> Академия Натяжных Потолков. Не является публичной офертой.</p>
       <div class="footer__legal">
         <a href="privacy.html">Политика конфиденциальности</a>
         <a href="index.html">На главную</a>
@@ -146,7 +146,7 @@ const pageSchema = (page) => {
         areaServed: ["Мытищи", "Москва", "Московская область"],
         provider: {
           "@type": "LocalBusiness",
-          name: "Натяжные потолки",
+          name: "Академия Натяжных Потолков",
           telephone: "+7-991-969-09-99",
           address: {
             "@type": "PostalAddress",
@@ -252,7 +252,7 @@ const renderPage = (page) => {
   <meta property="og:image" content="${SITE}/assets/og/${page.slug}.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Потолки Мытищи" />
+  <meta property="og:site_name" content="Академия Натяжных Потолков" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="${SITE}/assets/og/${page.slug}.jpg" />
   <meta name="theme-color" content="#0f1115" />
@@ -375,7 +375,7 @@ const renderCity = (page) => {
         areaServed: [page.short, "Мытищи", "Московская область"],
         provider: {
           "@type": "LocalBusiness",
-          name: "Натяжные потолки",
+          name: "Академия Натяжных Потолков",
           telephone: "+7-991-969-09-99",
           address: {
             "@type": "PostalAddress",
@@ -489,7 +489,7 @@ const renderCity = (page) => {
   <meta property="og:image" content="${SITE}/assets/og/${page.slug}.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Потолки Мытищи" />
+  <meta property="og:site_name" content="Академия Натяжных Потолков" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="${SITE}/assets/og/${page.slug}.jpg" />
   <meta name="theme-color" content="#0f1115" />
@@ -705,7 +705,7 @@ const renderTrust = (page) => {
   <meta property="og:image" content="${SITE}/assets/og/${page.slug}.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Потолки Мытищи" />
+  <meta property="og:site_name" content="Академия Натяжных Потолков" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="${SITE}/assets/og/${page.slug}.jpg" />
   <meta name="theme-color" content="#0f1115" />
@@ -800,7 +800,7 @@ const renderReviews = () => {
       {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
-        name: "Натяжные потолки",
+        name: "Академия Натяжных Потолков",
         telephone: "+7-991-969-09-99",
         address: {
           "@type": "PostalAddress",
@@ -867,7 +867,7 @@ const renderReviews = () => {
   <meta property="og:image" content="${SITE}/assets/og/otzyvy.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Потолки Мытищи" />
+  <meta property="og:site_name" content="Академия Натяжных Потолков" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="${SITE}/assets/og/otzyvy.jpg" />
   <meta name="theme-color" content="#0f1115" />
@@ -984,7 +984,7 @@ const renderHub = () => {  const serviceCards = services
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Услуги — натяжные потолки в Мытищах | Потолки Мытищи</title>
+  <title>Услуги — натяжные потолки в Мытищах | Академия Натяжных Потолков</title>
   <meta name="description" content="Виды натяжных потолков и решения по комнатам: теневые, световые линии, парящие, многоуровневые. Описание, фото и монтаж в Мытищах и Московской области." />
   <link rel="canonical" href="${SITE}/uslugi.html" />
   <meta property="og:type" content="website" />
@@ -995,7 +995,7 @@ const renderHub = () => {  const serviceCards = services
   <meta property="og:image" content="${SITE}/assets/og/uslugi.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Потолки Мытищи" />
+  <meta property="og:site_name" content="Академия Натяжных Потолков" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="${SITE}/assets/og/uslugi.jpg" />
   <meta name="theme-color" content="#0f1115" />
