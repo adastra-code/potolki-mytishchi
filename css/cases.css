@@ -40,6 +40,16 @@
   outline: 2px solid var(--brass);
   outline-offset: 3px;
 }
+.case-card__overlay--photo {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  appearance: none;
+}
 .case-card__media {
   position: relative;
   aspect-ratio: 16 / 10;

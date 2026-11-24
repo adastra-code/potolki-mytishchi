@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="css/fonts.css?v=20261124d" />
   <link rel="stylesheet" href="css/style.css?v=20261124d" />
   <link rel="stylesheet" href="css/gallery.css?v=20261124d" />
-  <link rel="stylesheet" href="css/cases.css?v=20261124e" />
+  <link rel="stylesheet" href="css/cases.css?v=20261124f" />
 </head>
 <body class="gallery-page">
   <a class="skip-link" href="#main">Перейти к содержимому</a>
@@ -130,6 +130,7 @@
           </article>
 
           <article class="case-card">
+            <button class="case-card__overlay case-card__overlay--photo" type="button" aria-label="Открыть фото: Световые линии, Гостиная"></button>
             <div class="case-card__media">
               <span class="case-card__badge">Пример</span>
               <img src="assets/img/work-living.webp" alt="Пример кейса: световые линии в гостиной" width="1280" height="960" loading="lazy" decoding="async" />
@@ -148,6 +149,7 @@
           </article>
 
           <article class="case-card">
+            <button class="case-card__overlay case-card__overlay--photo" type="button" aria-label="Открыть фото: Подсветка по периметру, Ванная"></button>
             <div class="case-card__media">
               <span class="case-card__badge">Пример</span>
               <img src="assets/img/work-bath.webp" alt="Пример кейса: подсветка по периметру в ванной" width="1052" height="473" loading="lazy" decoding="async" />
@@ -166,6 +168,7 @@
           </article>
 
           <article class="case-card">
+            <button class="case-card__overlay case-card__overlay--photo" type="button" aria-label="Открыть фото: Классическая люстра, Прихожая"></button>
             <div class="case-card__media">
               <span class="case-card__badge">Пример</span>
               <img src="assets/img/work-hall.webp" alt="Пример кейса: люстра и точечный свет в прихожей" width="960" height="1280" loading="lazy" decoding="async" />
@@ -184,6 +187,7 @@
           </article>
 
           <article class="case-card">
+            <button class="case-card__overlay case-card__overlay--photo" type="button" aria-label="Открыть фото: Глянцевый потолок, Спальня"></button>
             <div class="case-card__media">
               <span class="case-card__badge">Пример</span>
               <img src="assets/img/work-glossy.webp" alt="Пример кейса: глянцевый потолок в спальне" width="960" height="1280" loading="lazy" decoding="async" />
@@ -202,6 +206,7 @@
           </article>
 
           <article class="case-card">
+            <button class="case-card__overlay case-card__overlay--photo" type="button" aria-label="Открыть фото: Теневой профиль, Гостиная"></button>
             <div class="case-card__media">
               <span class="case-card__badge">Пример</span>
               <img src="assets/img/work-shadow.webp" alt="Пример кейса: теневой профиль в гостиной" width="1920" height="865" loading="lazy" decoding="async" />
@@ -220,6 +225,7 @@
           </article>
 
           <article class="case-card">
+            <button class="case-card__overlay case-card__overlay--photo" type="button" aria-label="Открыть фото: Цветная подсветка, Гостиная"></button>
             <div class="case-card__media">
               <span class="case-card__badge">Пример</span>
               <img src="assets/gallery/full/02.webp" alt="Пример кейса: цветная подсветка натяжного потолка" width="600" height="800" loading="lazy" decoding="async" />
@@ -316,7 +322,24 @@
     </a>
   </nav>
 
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии" aria-hidden="true" hidden>
+    <button class="lightbox__close" type="button" aria-label="Закрыть">
+      <span aria-hidden="true"></span>
+    </button>
+    <button class="lightbox__arrow lightbox__arrow--prev" type="button" aria-label="Предыдущее фото">←</button>
+    <figure class="lightbox__stage">
+      <img id="lightboxImage" alt="" />
+      <figcaption class="lightbox__meta">
+        <strong id="lightboxCounter">1 / 6</strong>
+        <span id="lightboxTitle">Пример кейса</span>
+      </figcaption>
+      <a class="lightbox__want" id="lightboxCta" href="zapis.html">Хочу такой же</a>
+    </figure>
+    <button class="lightbox__arrow lightbox__arrow--next" type="button" aria-label="Следующее фото">→</button>
+  </div>
+
   <script src="js/config.js?v=20261124d"></script>
   <script src="js/main.js?v=20261124d"></script>
+  <script src="js/case-lightbox.js?v=20261124f"></script>
 </body>
 </html>

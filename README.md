@@ -56,6 +56,7 @@ css/404.css       — стили страницы 404
 js/config.js      — настройки заявок и WhatsApp
 js/main.js        — меню, калькулятор, формы, аккордеон
 js/gallery.js     — галерея и просмотрщик фотографий
+js/case-lightbox.js — лайтбокс примеров в кейсах
 js/gallery-filters.js — разметка и фильтры галереи
 js/quiz.js        — логика теста и рекомендация
 tools/seo-data.mjs — контент SEO-страниц
