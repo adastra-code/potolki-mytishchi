@@ -43,6 +43,15 @@
   transition: transform .6s cubic-bezier(.2, .7, .2, 1);
 }
 .case-card:hover .case-card__media img { transform: scale(1.025); }
+
+.case-card--real {
+  border-color: rgba(200, 161, 101, .45);
+  box-shadow: 0 28px 60px -42px rgba(138, 106, 47, .45);
+}
+.case-card .case-card__badge--real {
+  background: var(--brass);
+  color: #14161a;
+}
 .case-card__badge {
   position: absolute;
   top: 12px;
