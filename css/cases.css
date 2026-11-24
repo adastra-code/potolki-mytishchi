@@ -21,6 +21,7 @@
 }
 
 .case-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -28,6 +29,16 @@
   background: #fff;
   border: 1px solid rgba(15, 17, 21, .07);
   box-shadow: 0 1px 0 rgba(15, 17, 21, .03);
+}
+.case-card__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+}
+.case-card__overlay:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
 }
 .case-card__media {
   position: relative;
@@ -103,6 +114,8 @@
   line-height: 1.4;
 }
 .case-card__cta {
+  position: relative;
+  z-index: 3;
   align-self: flex-start;
   margin-top: auto;
   padding-bottom: 3px;
