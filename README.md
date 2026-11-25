@@ -278,40 +278,53 @@ metrikaId: "12345678",
 
 ## Публикация
 
-Подойдёт GitHub Pages, Netlify, Vercel или обычный хостинг: достаточно загрузить
-`index.html`, `gallery.html`, `cases.html`, `privacy.html`, `uslugi.html`,
-`prices.html`, `zapis.html`, `quiz.html`, `materialy.html`, `404.html`,
-SEO-страницы, страницы доверия, папки `css`, `js`, `assets`, а также
-`robots.txt` и `sitemap.xml`. Никаких сборок и зависимостей нет.
-Сайт уже опубликован на GitHub Pages, обновление — обычный `git push`
-в ветку `main`.
+Основной сайт — REG.RU: `https://akademynp.ru`, каталог
+`/var/www/u3738658/data/www/akademynp.ru` на `server197.hosting.reg.ru`
+(SSH/SFTP, логин `u3738658`). Пароли в репозитории не хранятся.
 
-После изменений CSS или JS обновите версию в ссылках `?v=...` в HTML,
-чтобы браузеры и GitHub Pages не отдавали старый кэш.
+Сборка продакшена:
 
-GitHub Pages автоматически отдаёт `404.html` для несуществующих адресов.
-Страница закрыта от индексации через `noindex`, но ссылки с неё ведут
-на основные разделы.
+```bash
+node tools/build-prod.mjs              # домен akademynp.ru, сайт закрыт noindex
+node tools/build-prod.mjs --indexable  # открыть индексацию
+```
+
+Скрипт собирает `dist/` (231 файл, около 5,7 МБ): HTML, `css`, `js`,
+используемые WebP и OG-картинки; заменяет адреса GitHub Pages на
+`https://akademynp.ru`; отбрасывает неиспользуемые JPG. Каталог `dist/`
+в `.gitignore`.
+
+Загрузка на хостинг:
+
+```bash
+scp -r dist/* u3738658@server197.hosting.reg.ru:/var/www/u3738658/data/www/akademynp.ru/
+```
+
+После загрузки каталоги должны быть `755`, файлы `644`.
+
+GitHub Pages остаётся тестовой копией и закрыт от индексации. Production-сборка
+в репозиторий не коммитится.
+
+SSL: Let's Encrypt через ISPmanager (проверка DNS), сертификат на
+`akademynp.ru` и `www.akademynp.ru`, действует до 23.02.2027. Нужно следить
+за автопродлением.
 
 ## Индексация
 
-Сейчас сайт **закрыт от индексации**: в `robots.txt` стоит `Disallow: /`,
+Сейчас production **закрыт от индексации**: в `robots.txt` стоит `Disallow: /`,
 а на всех страницах — `<meta name="robots" content="noindex, nofollow" />`.
 Прямые ссылки и сам сайт при этом работают.
 
-Чтобы снова открыть сайт для поиска:
+Когда идентификация и оплата хостинга закрыты:
 
-1. Верните в `robots.txt`:
-   ```
-   User-agent: *
-   Allow: /
-
-   Sitemap: https://adastra-code.github.io/potolki-mytishchi/sitemap.xml
-   ```
-2. Уберите `noindex, nofollow` из `<head>` всех HTML-страниц и из
-   `tools/generate-seo.mjs`.
-3. Выполните `node tools/generate-seo.mjs`.
+1. Соберите открытую версию: `node tools/build-prod.mjs --indexable`.
+2. Загрузите `dist/` на хостинг.
+3. Проверьте, что `robots.txt` содержит `Allow: /` и `Sitemap`, а в HTML нет
+   `noindex`.
 4. Отправьте `sitemap.xml` в Яндекс.Вебмастер и Google Search Console.
+
+Не удаляйте `noindex` вручную из исходников: иначе откроется и GitHub-копия.
+Режим индексации задаётся только флагом `--indexable` при сборке.
 
 Уже проиндексированные страницы исчезнут из поиска не мгновенно —
 после повторного обхода, обычно от нескольких дней до нескольких недель.
