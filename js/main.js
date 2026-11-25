@@ -56,26 +56,56 @@
   const burger = $("#burger");
   const nav = $("#nav");
 
-  const closeNav = () => {
+  const navFocusables = () =>
+    $$("a[href], button:not([disabled])", nav).filter((el) => el.offsetParent !== null);
+
+  const closeNav = (options) => {
+    const restoreFocus = options === true || options?.restoreFocus === true;
     burger.classList.remove("is-open");
     nav.classList.remove("is-open");
     burger.setAttribute("aria-expanded", "false");
     burger.setAttribute("aria-label", "Открыть меню");
     document.body.style.overflow = "";
+    if (restoreFocus) burger.focus({ preventScroll: true });
+  };
+
+  const openNav = () => {
+    burger.classList.add("is-open");
+    nav.classList.add("is-open");
+    burger.setAttribute("aria-expanded", "true");
+    burger.setAttribute("aria-label", "Закрыть меню");
+    document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => navFocusables()[0]?.focus({ preventScroll: true }));
   };
 
   burger.addEventListener("click", () => {
-    const open = !nav.classList.contains("is-open");
-    burger.classList.toggle("is-open", open);
-    nav.classList.toggle("is-open", open);
-    burger.setAttribute("aria-expanded", String(open));
-    burger.setAttribute("aria-label", open ? "Закрыть меню" : "Открыть меню");
-    document.body.style.overflow = open ? "hidden" : "";
+    if (nav.classList.contains("is-open")) closeNav({ restoreFocus: true });
+    else openNav();
   });
 
-  $$("a", nav).forEach((link) => link.addEventListener("click", closeNav));
+  $$("a", nav).forEach((link) => link.addEventListener("click", () => closeNav()));
   window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeNav();
+    if (nav.classList.contains("is-open")) {
+      if (e.key === "Escape") {
+        closeNav({ restoreFocus: true });
+        return;
+      }
+      if (e.key === "Tab") {
+        const nodes = navFocusables();
+        if (!nodes.length) return;
+        const first = nodes[0];
+        const last = nodes[nodes.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    } else if (e.key === "Escape") {
+      closeNav();
+    }
   });
   window.addEventListener("resize", () => {
     if (window.innerWidth > 979) closeNav();

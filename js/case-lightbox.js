@@ -83,9 +83,25 @@
     if (event.target === box) close();
   });
 
+  const focusables = () =>
+    Array.from(box.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+      .filter((el) => el.offsetParent !== null);
+
   document.addEventListener("keydown", (event) => {
     if (box.hidden) return;
-    if (event.key === "Escape") {
+    if (event.key === "Tab") {
+      const nodes = focusables();
+      if (!nodes.length) return;
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    } else if (event.key === "Escape") {
       event.preventDefault();
       close();
     } else if (event.key === "ArrowLeft") {
