@@ -172,6 +172,8 @@
       Array.from(calcRooms.querySelectorAll(".calc-room")).forEach((roomEl, index) => {
         const subtotal = roomEl.querySelector(".room-subtotal");
         if (subtotal) subtotal.textContent = `${rooms[index].area} м²`;
+        const summary = roomEl.querySelector(".calc-room__summary");
+        if (summary) summary.textContent = `${TYPE_LABELS[rooms[index].type]} · ${rooms[index].area} м²`;
       });
 
       breakdown.innerHTML = rooms
@@ -194,46 +196,64 @@
       room.dataset.id = String(id);
       room.innerHTML = `
         <div class="calc-room__head">
-          <span class="calc-room__title">Комната <span class="room-number"></span></span>
-          <button class="calc-room__remove" type="button" aria-label="Удалить комнату">×</button>
+          <div class="calc-room__head-main">
+            <span class="calc-room__title">Комната <span class="room-number"></span></span>
+            <span class="calc-room__summary"></span>
+          </div>
+          <div class="calc-room__actions">
+            <button class="calc-room__toggle" type="button" aria-expanded="true" aria-controls="calcRoomBody${id}" aria-label="Свернуть комнату">
+              <span aria-hidden="true"></span>
+            </button>
+            <button class="calc-room__remove" type="button" aria-label="Удалить комнату">×</button>
+          </div>
         </div>
-        <div class="calc-room__grid">
-          <label class="field field--compact calc-room__type">
-            <span>Тип потолка</span>
-            <select class="room-type">${typeOptions}</select>
+        <div class="calc-room__body" id="calcRoomBody${id}">
+          <div class="calc-room__grid">
+            <label class="field field--compact calc-room__type">
+              <span>Тип потолка</span>
+              <select class="room-type">${typeOptions}</select>
+            </label>
+            <label class="field field--compact">
+              <span>Площадь, м²</span>
+              <input class="room-area" type="number" inputmode="decimal" min="3" max="150" step="1" />
+            </label>
+            <label class="field field--compact">
+              <span>Светильники, шт</span>
+              <input class="room-lights" type="number" inputmode="numeric" min="0" max="24" step="1" />
+            </label>
+            <label class="field field--compact">
+              <span>Люстры, шт</span>
+              <input class="room-chandeliers" type="number" inputmode="numeric" min="0" max="4" step="1" />
+            </label>
+            <label class="field field--compact">
+              <span>Обход труб, шт</span>
+              <input class="room-pipes" type="number" inputmode="numeric" min="0" max="4" step="1" />
+            </label>
+            <label class="field field--compact">
+              <span>Доп. углы, шт</span>
+              <input class="room-corners" type="number" inputmode="numeric" min="0" max="8" step="1" />
+            </label>
+          </div>
+          <label class="switch calc-room__demolition">
+            <input class="room-demolition" type="checkbox" />
+            <span class="switch__box" aria-hidden="true"></span>
+            <span>Демонтаж старого потолка</span>
           </label>
-          <label class="field field--compact">
-            <span>Площадь, м²</span>
-            <input class="room-area" type="number" inputmode="decimal" min="3" max="150" step="1" />
-          </label>
-          <label class="field field--compact">
-            <span>Светильники, шт</span>
-            <input class="room-lights" type="number" inputmode="numeric" min="0" max="24" step="1" />
-          </label>
-          <label class="field field--compact">
-            <span>Люстры, шт</span>
-            <input class="room-chandeliers" type="number" inputmode="numeric" min="0" max="4" step="1" />
-          </label>
-          <label class="field field--compact">
-            <span>Обход труб, шт</span>
-            <input class="room-pipes" type="number" inputmode="numeric" min="0" max="4" step="1" />
-          </label>
-          <label class="field field--compact">
-            <span>Доп. углы, шт</span>
-            <input class="room-corners" type="number" inputmode="numeric" min="0" max="8" step="1" />
-          </label>
-        </div>
-        <label class="switch calc-room__demolition">
-          <input class="room-demolition" type="checkbox" />
-          <span class="switch__box" aria-hidden="true"></span>
-          <span>Демонтаж старого потолка</span>
-        </label>
-        <div class="calc-room__subtotal">
-          <span>Площадь</span>
-          <strong class="room-subtotal">0 м²</strong>
+          <div class="calc-room__subtotal">
+            <span>Площадь</span>
+            <strong class="room-subtotal">0 м²</strong>
+          </div>
         </div>`;
 
       calcRooms.appendChild(room);
+
+      const isOnlyRoom = calcRooms.querySelectorAll(".calc-room").length === 1;
+      const toggleBtn = room.querySelector(".calc-room__toggle");
+      room.classList.toggle("is-open", isOnlyRoom);
+      if (toggleBtn) {
+        toggleBtn.setAttribute("aria-expanded", String(isOnlyRoom));
+        toggleBtn.setAttribute("aria-label", isOnlyRoom ? "Свернуть комнату" : "Развернуть комнату");
+      }
 
       const values = {
         type: defaults.type || "matte",
@@ -261,16 +281,40 @@
     calcRooms.addEventListener("input", calcTotal);
     calcRooms.addEventListener("change", calcTotal);
     calcRooms.addEventListener("click", (event) => {
+      const toggle = event.target.closest(".calc-room__toggle");
+      if (toggle) {
+        const room = toggle.closest(".calc-room");
+        const isOpen = room.classList.toggle("is-open");
+        toggle.setAttribute("aria-expanded", String(isOpen));
+        toggle.setAttribute("aria-label", isOpen ? "Свернуть комнату" : "Развернуть комнату");
+        return;
+      }
+
       const remove = event.target.closest(".calc-room__remove");
       if (!remove) return;
       if (calcRooms.children.length === 1) return;
       remove.closest(".calc-room").remove();
+      if (!calcRooms.querySelector(".calc-room.is-open")) {
+        const last = calcRooms.querySelector(".calc-room:last-child");
+        last?.classList.add("is-open");
+        const lastToggle = last?.querySelector(".calc-room__toggle");
+        lastToggle?.setAttribute("aria-expanded", "true");
+        lastToggle?.setAttribute("aria-label", "Свернуть комнату");
+      }
       renumber();
       calcTotal();
     });
 
     addRoomBtn.addEventListener("click", () => {
-      createRoom({ area: 18, type: "matte", lights: 4 });
+      const room = createRoom({ area: 18, type: "matte", lights: 4 });
+      if (!room) return;
+      calcRooms.querySelectorAll(".calc-room").forEach((item) => {
+        const isOpen = item === room;
+        item.classList.toggle("is-open", isOpen);
+        const toggle = item.querySelector(".calc-room__toggle");
+        toggle?.setAttribute("aria-expanded", String(isOpen));
+        toggle?.setAttribute("aria-label", isOpen ? "Свернуть комнату" : "Развернуть комнату");
+      });
     });
 
     createRoom({
