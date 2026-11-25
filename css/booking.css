@@ -102,3 +102,8 @@
 @media (max-width: 500px) {
   .booking-form__row { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 600px) {
+  .booking-form .field select { font-size: 16px; }
+}
+
