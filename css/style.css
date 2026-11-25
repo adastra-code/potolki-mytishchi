@@ -1844,7 +1844,7 @@ section[id], #top { scroll-margin-top: 88px; }
   .nav > a { width: 100%; padding: 16px 0; border-bottom: 1px solid rgba(255, 255, 255, .1); opacity: 1; }
   .nav a::after { display: none; }
   .nav__mobile-cta { display: grid; gap: 18px; width: 100%; margin-top: 32px; }
-  .nav__phone { font-size: 20px; color: var(--brass-2); text-align: center; border: 0 !important; padding: 0 !important; }
+  .nav__phone { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; font-size: 20px; color: var(--brass-2); text-align: center; border: 0 !important; padding: 0 !important; }
 
   .header { color: var(--white); }
   .header.is-scrolled { color: var(--ink); }
@@ -1990,6 +1990,12 @@ section[id], #top { scroll-margin-top: 88px; }
 
   .mobile-bar__item {
     min-height: 52px;
+  }
+
+  .footer__contacts a[href^="tel:"] {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 
   .btn,
