@@ -1913,6 +1913,14 @@ section[id], #top { scroll-margin-top: 88px; }
   .mobile-bar__item {
     min-height: 52px;
   }
+
+  .btn,
+  .mobile-bar__item,
+  .quiz-option,
+  .case-card__overlay,
+  .date-chip {
+    touch-action: manipulation;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -3,7 +3,7 @@ import { allPages, services, rooms, cities, trustPages, reviewsData } from "./se
 
 const root = process.cwd();
 const SITE = "https://adastra-code.github.io/potolki-mytishchi";
-const V = "20261125b";
+const V = "20261125c";
 
 const nav = `
       <nav class="nav" id="nav" aria-label="Основная навигация">
