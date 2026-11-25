@@ -1867,6 +1867,54 @@ section[id], #top { scroll-margin-top: 88px; }
   .review { padding: 22px; }
 }
 
+/* ---------- Mobile refinements ---------- */
+@media (max-width: 600px) {
+  body {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+
+  .nav {
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  }
+
+  .field input[type="text"],
+  .field input[type="tel"],
+  .field input[type="email"],
+  .field input[type="number"],
+  .field input[type="date"],
+  .field input[type="time"],
+  .field textarea,
+  .field select,
+  .booking-form .field select {
+    font-size: 16px;
+  }
+
+  .field input[type="date"],
+  .field input[type="time"] {
+    min-height: 50px;
+  }
+
+  .field--compact input,
+  .field--compact select {
+    min-height: 46px;
+    font-size: 16px;
+  }
+
+  .calc-room__grid {
+    gap: 10px 12px;
+  }
+
+  .case-hero h1,
+  .gallery-hero h1,
+  .seo-hero h1 {
+    line-height: 1.04;
+  }
+
+  .mobile-bar__item {
+    min-height: 52px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
