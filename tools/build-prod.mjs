@@ -32,7 +32,7 @@ const transform = async (target) => {
   if (!TEXT_EXT.has(ext)) return;
   const source = await readFile(target, "utf8");
   let next = source.split(OLD).join(NEW).split("adastra-code.github.io/potolki-mytishchi").join("akademynp.ru");
-  if (INDEXABLE && ext === ".html") {
+  if (INDEXABLE && ext === ".html" && path.basename(target) !== "404.html") {
     next = next.replace(/[ \t]*<meta\s+name="robots"[^>]*noindex[^>]*>\s*\r?\n?/gi, "");
   }
   if (next !== source) await writeFile(target, next, "utf8");
