@@ -306,8 +306,15 @@ GitHub Pages остаётся тестовой копией и закрыт от
 в репозиторий не коммитится.
 
 SSL: Let's Encrypt через ISPmanager (проверка DNS), сертификат на
-`akademynp.ru` и `www.akademynp.ru`, действует до 23.02.2027. Нужно следить
-за автопродлением.
+`akademynp.ru` и `www.akademynp.ru`, действует до 23.02.2027. Автопродление
+в панели не подтверждено — продлить или перевыпустить в феврале 2027.
+
+Редиректы: `www.akademynp.ru` → `https://akademynp.ru`, `http` → `https`.
+Правила лежат в `.htaccess` на сервере, шаблон — `deploy/htaccess`.
+При пересоздании сайта загрузить отдельно:
+`scp deploy/htaccess u3738658@server197.hosting.reg.ru:/var/www/u3738658/data/www/akademynp.ru/.htaccess`.
+
+Бэкапы: REG.RU создаёт ежедневно, проверить в карточке услуги → «Бэкапы».
 
 ## Индексация
 

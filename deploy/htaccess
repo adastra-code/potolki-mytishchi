@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# www -> non-www
+RewriteCond %{HTTP_HOST} ^www\.akademynp\.ru$ [NC]
+RewriteRule ^ https://akademynp.ru%{REQUEST_URI} [R=301,L]
+
+# http -> https (nginx proxies to Apache and sets X-Forwarded-Proto)
+RewriteCond %{HTTP:X-Forwarded-Proto} !^https$ [NC]
+RewriteRule ^ https://akademynp.ru%{REQUEST_URI} [R=301,L]
