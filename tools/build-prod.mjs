@@ -5,6 +5,7 @@ const ROOT = process.cwd();
 const OUT = path.join(ROOT, "dist");
 const OLD = "https://adastra-code.github.io/potolki-mytishchi";
 const NEW = "https://akademynp.ru";
+const METRIKA_ID = "114716276";
 const INDEXABLE = process.argv.includes("--indexable");
 
 const KEEP_TOP = new Set([
@@ -32,6 +33,9 @@ const transform = async (target) => {
   if (!TEXT_EXT.has(ext)) return;
   const source = await readFile(target, "utf8");
   let next = source.split(OLD).join(NEW).split("adastra-code.github.io/potolki-mytishchi").join("akademynp.ru");
+  if (path.basename(target) === "config.js" && path.basename(path.dirname(target)) === "js") {
+    next = next.replace(/metrikaId:\s*""/, `metrikaId: "${METRIKA_ID}"`);
+  }
   if (INDEXABLE && ext === ".html" && path.basename(target) !== "404.html") {
     next = next.replace(/[ \t]*<meta\s+name="robots"[^>]*noindex[^>]*>\s*\r?\n?/gi, "");
   }
@@ -96,4 +100,5 @@ const walk = async (dir) => {
 await walk(OUT);
 console.log(`dist: ${count} files, ${(total / 1048576).toFixed(2)} MB`);
 console.log(`domain: ${NEW}`);
+console.log(`metrika: ${METRIKA_ID}`);
 console.log(`indexing: ${INDEXABLE ? "open" : "closed (noindex + Disallow)"}`);
